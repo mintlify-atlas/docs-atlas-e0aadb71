@@ -29,7 +29,7 @@ Cookie Monster intercepts the number-formatting and time-formatting functions it
   When a scale's named suffix table is exhausted (e.g., Short scale reaches its maximum defined suffix), Cookie Monster automatically falls back to Scientific notation for that number.
 </ParamField>
 
-<ParamField path="ScaleDecimals" type="enum" default="2 decimals">
+<ParamField path="ScaleDecimals" type="enum" default="3 decimals">
   Sets the number of decimal places used when Cookie Monster formats a number that has been scaled.
 
   | Option | Example (1,234,567,890) with Short scale |
@@ -104,31 +104,31 @@ Cookie Monster intercepts the number-formatting and time-formatting functions it
 
 ## Scale Format Examples
 
-The table below shows how the number **1,234,567,890** (just over 1.2 billion) is rendered in each Scale mode with **ScaleDecimals** set to 2 and **ScaleSeparator** set to the standard (`.` for decimals).
+The table below shows how the number **1,234,567,890** (just over 1.2 billion) is rendered in each Scale mode with **ScaleDecimals** set to the default (3 decimal places) and **ScaleSeparator** set to the standard (`.` for decimals).
 
-```
+```text
 Game's setting scale     →  depends on Cookie Clicker's own setting
-Metric                   →  1.23 G
-Short scale              →  1.23 B
-Short scale (Abbrev.)    →  1.23 B
-Scientific notation      →  1.23E+9
-Engineering notation     →  1.23E9
+Metric                   →  1.235 G
+Short scale              →  1.235 B
+Short scale (Abbrev.)    →  1.235 B
+Scientific notation      →  1.235E+9
+Engineering notation     →  1.235E9
 ```
 
 For a smaller number like **1,500** (below the default ScaleCutoff of 999,999):
 
-```
+```text
 All scale modes          →  1,500   (plain integer, no suffix)
 ```
 
 For a very large number like **1,000,000,000,000** (1 trillion):
 
-```
-Metric                   →  1.00 T
-Short scale              →  1.00 Tr
-Short scale (Abbrev.)    →  1.00 T
-Scientific notation      →  1.00E+12
-Engineering notation     →  1.00E12
+```text
+Metric                   →  1.000 T
+Short scale              →  1.000 Tr
+Short scale (Abbrev.)    →  1.000 T
+Scientific notation      →  1.000E+12
+Engineering notation     →  1.000E12
 ```
 
 <Tip>

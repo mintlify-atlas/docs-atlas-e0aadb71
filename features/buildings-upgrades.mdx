@@ -1,5 +1,5 @@
 ---
-title: "Building and Upgrade Display in Cookie Monster"
+title: "Buildings and Upgrades Display Features in Cookie Monster"
 sidebarTitle: "Buildings & Upgrades"
 description: "Cookie Monster color-codes buildings and upgrades by payback period, adds a sortable bottom bar, an upgrade counter bar, and bulk-buy blocking."
 ---
@@ -70,7 +70,7 @@ The **BotBar** setting (default: ON) adds a horizontal table below the cookie ar
 4. **Time Left** — how long until you have enough cookies to afford the purchase, accounting for wrinkler-held cookies if the wrinkler calculation setting is enabled.
 
 <Note>
-  The bottom bar only displays meaningful data in **buy-1 mode** (`Game.buyMode === 1`). When you switch to sell mode, the bar retains the last buy-mode values it calculated so the display doesn't go blank, but the numbers reflect the most recent buy-mode snapshot.
+  The bottom bar only updates while in **buy mode** (`Game.buyMode === 1`). When you switch to sell mode, the bar retains the last buy-mode values it calculated so the display doesn't go blank, but the numbers reflect the most recent buy-mode snapshot.
 </Note>
 
 For a full explanation of the PP color scale used in the bottom bar, see [Color Coding](/concepts/color-coding). For details on how the payback period number itself is derived, see [Payback Period](/concepts/payback-period).
@@ -94,13 +94,13 @@ When **HideSectionsButtons** is ON (default: OFF), two toggle buttons appear abo
 
 ## Building Lock Buttons
 
-Cookie Monster injects small lock buttons next to each building. Clicking a lock prevents Cookie Monster from counting that building toward the optimal purchase recommendation. This is useful for deliberate strategies such as saving up for a specific building while ignoring lower-priority options.
+Cookie Monster injects a **Lock** button into each building's row in the building detail view. Clicking the lock disables all mouse interaction with that building row (the button changes to **Unlock** and the row is dimmed to 40% opacity), preventing accidental purchases while you focus on a different buying goal. Click **Unlock** to re-enable the row. Locked buildings are saved across sessions.
 
 ## Bulk Buy Block
 
 The **BulkBuyBlock** setting (default: ON) prevents accidental partial bulk purchases. With it enabled, clicking a building in ×10 or ×100 mode when you can only afford fewer than the full batch does nothing — the click is silently blocked. This prevents scenarios such as accidentally buying 7 buildings when you intended to buy a full 10.
 
-```
+```text
 Example: Bank = 950 cookies, building costs 100 each
 Bulk ×10 total = 1000 cookies required
 → BulkBuyBlock ON:  click is blocked, 0 buildings purchased

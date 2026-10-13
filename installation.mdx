@@ -1,5 +1,5 @@
 ---
-title: "Install Cookie Monster in Cookie Clicker"
+title: "Installing Cookie Monster in Cookie Clicker: Full Guide"
 sidebarTitle: "Installation"
 description: "Three ways to load Cookie Monster into Cookie Clicker: a one-click bookmarklet, a browser-console paste, or a permanent userscript via Tampermonkey."
 ---
@@ -91,17 +91,15 @@ Cookie Monster is distributed as a single compiled JavaScript file hosted on Git
         Navigate to the [CookieMonster.user.js file](https://github.com/CookieMonsterTeam/CookieMonster/blob/master/CookieMonster.user.js) in the GitHub repository and click **Raw**. Tampermonkey/Greasemonkey will detect the `.user.js` extension and offer to install the script automatically.
       </Step>
       <Step title="Confirm the installation">
-        Review the script details in the manager's install dialog and click **Install** (Tampermonkey) or **Add** (Greasemonkey). The script targets the following URLs:
+        Review the script details in the manager's install dialog and click **Install** (Tampermonkey) or **Add** (Greasemonkey). The script uses `@include` directives with regex patterns that match both `http` and `https` for the two supported Cookie Clicker hosts:
 
-        ```
-        https://orteil.dashnet.org/cookieclicker/
-        http://orteil.dashnet.org/cookieclicker/
-        https://cookieclicker.ee/
-        http://cookieclicker.ee/
+        ```text
+        // @include /https?://orteil.dashnet.org/cookieclicker/
+        // @include /https?://cookieclicker.ee/
         ```
       </Step>
       <Step title="Open Cookie Clicker">
-        Visit either of the URLs above. The userscript waits for the game's `Game.ready` flag before calling `Game.LoadMod`, so it is safe even if the page is slow to load. Cookie Monster will appear automatically once the game is ready.
+        Visit any of the matched URLs above. The userscript waits for the game's `Game.ready` flag before calling `Game.LoadMod`, so it is safe even if the page is slow to load. Cookie Monster will appear automatically once the game is ready.
       </Step>
     </Steps>
 

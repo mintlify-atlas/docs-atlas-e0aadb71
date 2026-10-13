@@ -1,5 +1,5 @@
 ---
-title: "Cookie Monster Source Code Architecture Guide"
+title: "Cookie Monster Source Code Architecture and Build Guide"
 sidebarTitle: "Architecture"
 description: "A walkthrough of the src/ directory layout, mod lifecycle hooks, simulation engine design, and build pipeline used in Cookie Monster's codebase."
 ---
@@ -133,23 +133,28 @@ This means all settings survive game saves and are compatible with the Cookie Cl
 
 ## Build Pipeline
 
-Cookie Monster uses Webpack to bundle the ES-module source tree into a single distributable file. The `package.json` `scripts` section defines four build commands:
+Cookie Monster uses Webpack to bundle the ES-module source tree into a single distributable file. The `package.json` `scripts` section defines the following commands:
 
 ```bash
-npm install          # install dependencies (requires GitHub Package Registry auth)
-npm run build-dev    # lint + test + build CookieMonsterDev.js
-npm run build-final  # lint + test + build CookieMonster.js (production)
-npm test             # run Mocha unit tests
+npm install           # install dependencies (requires GitHub Package Registry auth)
+npm run build-dev     # lint + test + build CookieMonsterDev.js (with external source map)
+npm run build-final   # lint + test + build CookieMonster.js (production)
+npm run build-test    # build CookieMonsterDev.js only, no lint or tests (inline source map)
+npm test              # run Mocha unit tests
+npm run eslint        # run ESLint only
 ```
 
 <Tabs>
   <Tab title="build-dev">
-    Runs `eslint → mocha → webpack --env minimize`. Outputs `dist/CookieMonsterDev.js` with an inline source map. This is the file you load into Cookie Clicker to test your changes locally.
+    Runs `eslint → mocha → webpack --env minimize`. Outputs `dist/CookieMonsterDev.js` with an external source map (`CookieMonsterDev.js.map`). This is the file you load into Cookie Clicker to test your changes locally.
 
-    The CI pipeline verifies that the committed `dist/CookieMonsterDev.js` matches a fresh webpack build on every push to `main`, `dev`, and `gh-pages`, and on every pull request.
+    The CI pipeline verifies that the committed `dist/CookieMonsterDev.js` matches a fresh webpack build on every push to `master`, `dev`, and `gh-pages`, and on every pull request.
   </Tab>
   <Tab title="build-final">
     Runs `eslint → mocha → webpack --env minimize --env finalfile`. Outputs `dist/CookieMonster.js` and a companion `CookieMonster.js.map` source map hosted at `https://cookiemonsterteam.github.io/CookieMonster/dist/`. This command is only run when cutting a production release to `master`.
+  </Tab>
+  <Tab title="build-test">
+    Runs `webpack` with no flags, producing `dist/CookieMonsterDev.js` with an inline source map and no minification. Useful for quick local iteration when you want to skip linting and tests entirely.
   </Tab>
   <Tab title="test">
     Invokes Mocha with `--recursive` (configured in `.mocharc.json`) to find and run all test files. Tests use the `chai` assertion library. CI also runs this step independently via `npx mocha`.
@@ -169,13 +174,13 @@ output: {
 },
 ```
 
-The `minimize` flag controls Terser minification and whether source maps are inline (dev) or external (production). The `finalfile` flag selects the production output filename.
+The `minimize` flag controls Terser minification and switches source maps from inline (no `minimize`) to external `.map` files (with `minimize`). The `finalfile` flag selects the production output filename and source map name.
 
 ---
 
 ## Continuous Integration
 
-The GitHub Actions workflow in `.github/workflows/CI.yml` triggers on every push to `main`, `dev`, and `gh-pages`, as well as all pull requests. It runs on `ubuntu-latest` with Node.js 22 and performs:
+The GitHub Actions workflow in `.github/workflows/CI.yml` triggers on every push to `master`, `dev`, and `gh-pages`, as well as all pull requests. It runs on `ubuntu-latest` with Node.js 22 and performs:
 
 1. Dependency installation via `npm ci` (using `GITHUB_TOKEN` for the GitHub Package Registry).
 2. ESLint check (`npx eslint`).

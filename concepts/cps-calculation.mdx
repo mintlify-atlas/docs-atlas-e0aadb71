@@ -1,5 +1,5 @@
 ---
-title: "How Cookie Monster Calculates Cookies Per Second"
+title: "How Cookie Monster Calculates Cookies Per Second (CPS)"
 sidebarTitle: "CPS Calculation"
 description: "Cookie Monster can use your current or a rolling-average CPS, optionally folding in wrinkler income. Learn every CPS mode and how it affects PP and timers."
 ---
@@ -11,12 +11,12 @@ Almost every number Cookie Monster shows — Payback Period values, timer countd
 The **`CPSMode`** setting (Calculation group) chooses the base CPS source:
 
 <Tabs>
-  <Tab title="Current CPS (default index 1)">
+  <Tab title="Current CPS (index 0)">
     Cookie Monster reads `Game.cookiesPs` directly — the live cookies-per-second value reported by the base game at the moment of calculation. This reflects any active buff (Frenzy, Click Frenzy, Clot, etc.) immediately, which means PP values will swing dramatically while a Frenzy is running and snap back the instant it ends.
 
     Use current CPS if you want real-time responsiveness and you're comfortable with the fact that PP rankings during a ×7 Frenzy reflect only that buffed state.
   </Tab>
-  <Tab title="Average CPS">
+  <Tab title="Average CPS (default — index 1)">
     Cookie Monster maintains an internal sliding-window queue of observed cookie gains, sampled once per real-world second. `CacheAverageCPS` is the mean of that queue over the window you select with **`AvgCPSHist`**. Buffs and debuffs are smoothed out over the window length, so PP values stay more stable during short-lived events.
 
     Use average CPS if you want consistent PP comparisons that aren't thrown off by the current buff state.
@@ -90,7 +90,7 @@ Wrinklers suck cookies off your CPS but pay back more than they took when you po
 
 ## NoGoldSwitch CPS
 
-When the **Golden Switch** buff is active, `Game.cookiesPs` reflects the multiplied CPS it grants. However, the Lucky! golden-cookie reward and the Conjure Baked Goods grimoire spell both calculate their payout based on CPS *without* the Golden Switch. Cookie Monster maintains a separate cached value — **`CacheNoGoldSwitchCookiesPS`** — for these calculations:
+In Cookie Clicker, toggling the Golden Switch to the **off** state grants the player a passive CPS bonus via the `Golden switch [off]` upgrade. However, the Lucky! golden-cookie reward and the Conjure Baked Goods grimoire spell calculate their payouts based on CPS *without* that bonus. Cookie Monster maintains a separate cached value — **`CacheNoGoldSwitchCookiesPS`** — for exactly these calculations:
 
 ```javascript
 // From NoGoldSwitchCPS.js
@@ -101,8 +101,8 @@ if (Game.Has('Golden switch [off]')) {
 }
 ```
 
-When the Golden Switch is **not** active, `CacheNoGoldSwitchCookiesPS` equals `Game.cookiesPs` and has no effect. When it **is** active, Cookie Monster uses the un-buffed CPS for the reserve warnings in building and upgrade tooltips, so the Lucky! and Conjure warnings remain accurate and don't mislead you into thinking your reserve is safer than it is.
+When the player does **not** have `Golden switch [off]`, `CacheNoGoldSwitchCookiesPS` simply equals `Game.cookiesPs`. When they **do** have it, Cookie Monster simulates removing the upgrade to determine what CPS would be without it, then uses that lower value for the reserve warnings in building and upgrade tooltips, so the Lucky! and Conjure warnings remain accurate.
 
 <Warning>
-  If you have the Golden Switch active, the tooltip bank-reserve warnings (Lucky!, Lucky! Frenzy, Conjure Baked Goods) are calculated against your **base CPS without the Golden Switch multiplier**. This is intentional — those golden cookie rewards themselves are capped by your base CPS, not the boosted value. Don't be surprised if the warning threshold seems lower than your current displayed CPS.
+  If you have the Golden Switch toggled off, the tooltip bank-reserve warnings (Lucky!, Lucky! Frenzy, Conjure Baked Goods) are calculated against your **CPS without the Golden Switch [off] bonus**. This is intentional — those golden cookie rewards are capped by your base CPS, not the boosted value. Don't be surprised if the warning threshold seems lower than your current displayed CPS.
 </Warning>

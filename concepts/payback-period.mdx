@@ -10,7 +10,7 @@ Cookie Monster's most fundamental feature is the **Payback Period (PP)** — a n
 
 At its heart, the Payback Period is computed from two terms added together:
 
-```
+```text
 PP = max(cost − cookies_in_bank, 0) / cps  +  cost / Δcps
 ```
 
@@ -60,7 +60,7 @@ Cookie Monster calculates PP separately for three purchase quantities:
 
 Beyond rank-based coloring, Cookie Monster also supports an absolute threshold. The **`PPSecondsLowerLimit`** setting (Colours group, default: `0`) lets you specify a number of seconds. Any building or upgrade whose cost is less than that many seconds of your current CPS will be marked as optimal (light blue) regardless of its rank.
 
-```
+```text
 item is optimal  ⟺  cost / CPS  <  PPSecondsLowerLimit
 ```
 

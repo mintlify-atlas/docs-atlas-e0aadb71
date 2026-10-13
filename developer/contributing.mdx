@@ -1,5 +1,5 @@
 ---
-title: "How to Contribute to Cookie Monster Development"
+title: "Contributing to Cookie Monster: Fork, Build, and PR"
 sidebarTitle: "Contributing"
 description: "Complete guide to forking, setting up local authentication, building, testing, submitting pull requests, and reporting bugs for Cookie Monster."
 ---
@@ -182,14 +182,15 @@ These guidelines are taken directly from `CONTRIBUTING.md`:
 ## Build Reference
 
 ```bash
-npm install          # install all dependencies (requires GITHUB_REGISTRY_PAT)
-npm run build-dev    # eslint + mocha + webpack → dist/CookieMonsterDev.js
-npm run build-final  # eslint + mocha + webpack → dist/CookieMonster.js (production)
-npm test             # run Mocha unit tests only
-npm run eslint       # run ESLint only
+npm install           # install all dependencies (requires GITHUB_REGISTRY_PAT)
+npm run build-dev     # eslint + mocha + webpack → dist/CookieMonsterDev.js (external source map)
+npm run build-final   # eslint + mocha + webpack → dist/CookieMonster.js (production)
+npm run build-test    # webpack only → dist/CookieMonsterDev.js (inline source map, no lint/test)
+npm test              # run Mocha unit tests only
+npm run eslint        # run ESLint only
 ```
 
-`build-dev` produces a minimized bundle with an external source map, suitable for local testing. `build-final` is used by maintainers to cut production releases; it outputs the file served to all users via the bookmarklet and userscript.
+`build-dev` produces a minimized bundle with an external source map, suitable for local testing. `build-test` skips linting and tests and uses an inline source map — useful for fast iteration. `build-final` is used by maintainers to cut production releases; it outputs the file served to all users via the bookmarklet and userscript.
 
 ---
 

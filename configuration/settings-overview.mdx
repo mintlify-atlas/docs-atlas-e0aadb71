@@ -1,7 +1,7 @@
 ---
 title: "Cookie Monster Settings Panel: A Complete Overview"
 sidebarTitle: "Settings Overview"
-description: "A full guide to Cookie Monster's settings panel — where to find it, how Favourites work, and what each of the 8 setting categories controls."
+description: "A full guide to Cookie Monster's settings panel — where to find it, how Favourites work, and what each of the 9 setting categories controls."
 ---
 
 Cookie Monster adds its own settings panel directly inside Cookie Clicker's native Options menu. Open the game's Options menu (the button in the top-right of the screen), then scroll down past the standard game options to find the **Cookie Monster** section. Every toggle, colour picker, and numeric input described throughout this documentation lives there.
@@ -15,7 +15,7 @@ When you open Options, the Cookie Monster settings block appears below the base 
 One of the most useful quality-of-life features in Cookie Monster's settings UI is the **Favourites** system, controlled by the `FavouriteSettings` toggle.
 
 <Tip>
-  Pin the settings you tweak most often — such as `CPSMode`, `Scale`, or `PPRigidelMode` — to the Favourites section so you can reach them instantly without scrolling through all eight categories.
+  Pin the settings you tweak most often — such as `CPSMode`, `Scale`, or `PPRigidelMode` — to the Favourites section so you can reach them instantly without scrolling through all nine categories.
 </Tip>
 
 The `FavouriteSettings` setting has three modes:
@@ -28,7 +28,7 @@ The `FavouriteSettings` setting has three modes:
 
 ## The Eight Setting Categories
 
-Cookie Monster organises all its options into eight groups. The table below summarises what each one governs.
+Cookie Monster organises all its options into nine groups. The table below summarises what each one governs.
 
 <Accordion title="1 · Calculation">
   Controls how Cookie Monster computes cookie-per-second figures and payback times throughout the UI.
@@ -52,15 +52,14 @@ Cookie Monster organises all its options into eight groups. The table below summ
 </Accordion>
 
 <Accordion title="3 · Colours">
-  Controls colour-coding of buildings and upgrades, PP-based filters, and all ten customisable colour swatches.
+  Controls colour-coding of buildings and upgrades, PP-based filters, and all nine customisable colour swatches.
 
   - **BuildColour** — enable or disable colour-coding on buildings.
-  - **UpBarColour** — enable colour-coding on upgrades, optionally with a counter bar.
   - **PPOnlyConsiderBuyable** — mark items you cannot currently afford as if they are the worst option.
   - **PPExcludeTop** — exclude the 1st, 2nd, or 3rd best options from colour-coding.
   - **PPRigidelMode** — ignore all buy-1 options to keep your total building count ending in 10 for the Rigidel pantheon god.
   - **PPSecondsLowerLimit** — treat any item costing fewer than X seconds of CPS as optimal regardless of its PP rank.
-  - **ColourBlue / Green / Yellow / Orange / Red / Purple / Gray / Pink / Brown** — the ten customisable colour swatches used throughout the UI.
+  - **ColourBlue / Green / Yellow / Orange / Red / Purple / Gray / Pink / Brown** — the nine customisable colour swatches used throughout the UI.
 </Accordion>
 
 <Accordion title="4 · BarsDisplay">
@@ -134,6 +133,13 @@ Cookie Monster organises all its options into eight groups. The table below summ
   | **NotificationWrinkMax** | The maximum number of wrinklers is reached |
 </Accordion>
 
+<Accordion title="9 · Miscellaneous">
+  Holds two settings that do not belong to any specific feature group: bulk-buy protection and the Favourites UI toggle.
+
+  - **BulkBuyBlock** — when ON, prevents partial bulk purchases; the buy button does nothing if you cannot afford the full batch (default ON).
+  - **FavouriteSettings** — show, hide, or lock the star icons that let you pin any setting to the Favourites section at the top of the Cookie Monster settings block.
+</Accordion>
+
 ## Quick Navigation
 
 <CardGroup cols={2}>
@@ -141,7 +147,7 @@ Cookie Monster organises all its options into eight groups. The table below summ
     Configure how Cookie Monster formats large numbers and time durations.
   </Card>
   <Card title="Colours" icon="palette" href="/configuration/colours">
-    Customise the ten colour swatches and PP-filter behaviour.
+    Customise the nine colour swatches and PP-filter behaviour.
   </Card>
   <Card title="Advanced" icon="sliders" href="/configuration/advanced">
     Rigidel mode, bulk-buy blocking, sorting, and more specialised options.
