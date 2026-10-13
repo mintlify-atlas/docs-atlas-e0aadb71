@@ -1,0 +1,129 @@
+---
+title: "Customizing Cookie Monster's Color Scheme and Palette"
+sidebarTitle: "Colours"
+description: "Learn how to change all 10 customizable colors Cookie Monster uses for PP ranking, timer bars, tooltips, and golden-cookie screen flashes."
+---
+
+Cookie Monster uses a set of ten named colours to communicate information at a glance — which building has the best Payback Period, which timer bar segment is active, what kind of frenzy is running, and more. Every one of these colours can be changed directly from the settings panel using an inline colour picker, so you can adapt the palette to your display, your accessibility needs, or simply your personal taste.
+
+<Tip>
+  Colour pickers are rendered inline within the Cookie Monster settings panel. Click the colour swatch next to any colour setting to open the picker — there is no need to type hex codes manually, though you can paste one directly into the text field if you prefer.
+</Tip>
+
+## Where Colours Are Used
+
+Before diving into each swatch, it helps to understand the three main surfaces where Cookie Monster applies these colours:
+
+- **Buildings list** — each building row is tinted according to its PP rank relative to the others (requires `BuildColour` ON).
+- **Upgrade bar** — each upgrade is colour-coded by its PP rank (requires `UpBarColour` set to *with bar* or *without bar*).
+- **Timer bar** — each timer segment adopts the colour corresponding to the active buff or event.
+- **Tooltips** — PP labels inside building and upgrade tooltips use the matching rank colour.
+- **Screen flash** — when a golden cookie spawns and `GCFlash` is ON, the screen briefly flashes the `ColourGCFlash` colour.
+
+For a full explanation of what PP rank means and how the colour tiers are calculated, see [Color Coding Explained](/concepts/color-coding).
+
+## Colour Settings Reference
+
+<ParamField path="ColourBlue" type="color" default="#4bb8f0">
+  **Standard colour: blue (`#4bb8f0`)**
+
+  Used to highlight **upgrades whose PP is better than the best PP building**. In practice this means an upgrade is an even stronger purchase than buying another copy of your top-ranked building, so blue acts as the highest-priority signal in the upgrade list.
+
+  Also used for the **Click Frenzy** timer bar segment and various informational labels throughout Cookie Monster's UI.
+</ParamField>
+
+<ParamField path="ColourGreen" type="color" default="#00ff00">
+  **Standard colour: green (`#00ff00`)**
+
+  Used to highlight the **single best PP building** — the one building that gives you the most cookies per cookie spent right now.
+
+  Also used for the **Blood Frenzy** timer bar segment.
+</ParamField>
+
+<ParamField path="ColourYellow" type="color" default="#ffff00">
+  **Standard colour: yellow (`#ffff00`)**
+
+  Used to highlight buildings ranked **within the top 10 PP** (excluding the best, which is green).
+
+  Also used for the **Frenzy** timer bar segment.
+</ParamField>
+
+<ParamField path="ColourOrange" type="color" default="#ff7f00">
+  **Standard colour: orange (`#ff7f00`)**
+
+  Used to highlight buildings ranked **within the top 20 PP** (outside the top 10).
+
+  Also used for the **Next Reindeer** timer bar segment.
+</ParamField>
+
+<ParamField path="ColourRed" type="color" default="#ff0000">
+  **Standard colour: red (`#ff0000`)**
+
+  Used to highlight buildings ranked **within the top 30 PP** (outside the top 20).
+
+  Also used for the **Clot** timer bar segment.
+</ParamField>
+
+<ParamField path="ColourPurple" type="color" default="#ff00ff">
+  **Standard colour: purple (`#ff00ff`)**
+
+  Used to highlight buildings ranked **outside the top 30 PP** — these are your weakest purchases at the current moment but still have finite, calculable PP values.
+
+  Also used for the **Next Cookie** timer bar segment.
+</ParamField>
+
+<ParamField path="ColourGray" type="color" default="#b3b3b3">
+  **Standard colour: gray (`#b3b3b3`)**
+
+  Used to highlight buildings and upgrades with **negative or infinite PP** — items that would not meaningfully improve your CPS, or items whose cost cannot currently be recouped.
+
+  Also used for the **Next Cookie** and **Next Reindeer** timer bar segments in certain states.
+</ParamField>
+
+<ParamField path="ColourPink" type="color" default="#ff1493">
+  **Standard colour: pink (`#ff1493`)**
+
+  Used exclusively for the **Dragonflight** timer bar segment. Dragonflight massively multiplies clicking power while active, making this a distinctive hot-pink by default.
+</ParamField>
+
+<ParamField path="ColourBrown" type="color" default="#8b4513">
+  **Standard colour: brown (`#8b4513`)**
+
+  Used exclusively for the **Dragon Harvest** timer bar segment. Dragon Harvest multiplies passive CPS while active.
+</ParamField>
+
+<ParamField path="ColourGCFlash" type="color" default="#ffffff">
+  **Standard colour: white (`#ffffff`)**
+
+  The colour of the full-screen flash that fires when a golden cookie spawns and `GCFlash` is set to ON. The default white creates a bright, attention-grabbing pulse. You can set this to a softer colour (e.g., a pale gold `#ffd700`) if you find the default flash too harsh.
+
+  This setting is located in the **NotificationGC** sub-category of settings, but is listed here alongside the other colour swatches for completeness.
+</ParamField>
+
+## PP Rank Colour Summary
+
+The table below provides a quick-reference for all PP-related colours in rank order, from highest priority to lowest.
+
+| Colour | Default | PP Rank |
+|---|---|---|
+| Blue | `#4bb8f0` | Upgrades better than the best building |
+| Green | `#00ff00` | Best PP building (rank 1) |
+| Yellow | `#ffff00` | Top 10 PP |
+| Orange | `#ff7f00` | Top 20 PP |
+| Red | `#ff0000` | Top 30 PP |
+| Purple | `#ff00ff` | Outside top 30 |
+| Gray | `#b3b3b3` | Negative or infinite PP |
+
+## Timer Bar Colour Summary
+
+| Colour | Default | Timer Segment |
+|---|---|---|
+| Green | `#00ff00` | Blood Frenzy |
+| Yellow | `#ffff00` | Frenzy |
+| Orange | `#ff7f00` | Next Reindeer |
+| Red | `#ff0000` | Clot |
+| Blue | `#4bb8f0` | Click Frenzy |
+| Purple | `#ff00ff` | Next Cookie |
+| Gray | `#b3b3b3` | Next Cookie / Next Reindeer (idle) |
+| Pink | `#ff1493` | Dragonflight |
+| Brown | `#8b4513` | Dragon Harvest |

@@ -1,0 +1,136 @@
+---
+title: "Number and Time Notation Settings in Cookie Monster"
+sidebarTitle: "Notation"
+description: "Control how Cookie Monster formats large numbers and durations — choose a scale, set decimal places, pick a separator, and configure time display."
+---
+
+Cookie Monster intercepts the number-formatting and time-formatting functions it uses for its own overlays, tooltips, and statistics, giving you fine-grained control over how values are displayed. All settings in this group live under the **Notation** header in the Cookie Monster section of the Options menu. These settings affect only Cookie Monster's own rendering — the base game's number display is unchanged unless you choose the **Game's setting scale** option.
+
+<Note>
+  The **Scale** setting only applies to numbers Cookie Monster itself renders (PP values, CPS estimates, timer tooltips, statistics, etc.). The base Cookie Clicker store and building-count display continues to use whatever the game's own Options → Number format is set to, unless you choose **Game's setting scale**, which hands control back to Cookie Clicker entirely.
+</Note>
+
+## Notation Settings Reference
+
+<ParamField path="Scale" type="enum" default="Short scale">
+  Controls how Cookie Monster formats large numbers throughout its own UI elements.
+
+  | Option | Index | Example: 1,234,567,890 |
+  |---|---|---|
+  | Game's setting scale | 0 | *(delegates to Cookie Clicker's formatter)* |
+  | Metric | 1 | `1.23 G` |
+  | Short scale | 2 | `1.23 B` |
+  | Short scale (Abbreviated) | 3 | `1.23 B` |
+  | Scientific notation | 4 | `1.23E+9` |
+  | Engineering notation | 5 | `1.23E9` |
+
+  Numbers below the **ScaleCutoff** threshold are always rendered as plain locale-formatted integers regardless of this setting.
+
+  When a scale's named suffix table is exhausted (e.g., Short scale reaches its maximum defined suffix), Cookie Monster automatically falls back to Scientific notation for that number.
+</ParamField>
+
+<ParamField path="ScaleDecimals" type="enum" default="2 decimals">
+  Sets the number of decimal places used when Cookie Monster formats a number that has been scaled.
+
+  | Option | Example (1,234,567,890) with Short scale |
+  |---|---|
+  | 1 decimals | `1.2 B` |
+  | 2 decimals | `1.23 B` |
+  | 3 decimals | `1.235 B` |
+
+  This setting has no effect when **Scale** is set to **Game's setting scale**, because Cookie Monster delegates formatting to Cookie Clicker in that mode.
+</ParamField>
+
+<ParamField path="ScaleSeparator" type="enum" default=". for decimals (standard)">
+  Swaps the roles of the period (`.`) and comma (`,`) characters when rendering numbers, matching regional conventions.
+
+  | Option | Example |
+  |---|---|
+  | `. for decimals (standard)` | `1,234,567,890` / `1.23 B` |
+  | `. for thousands` | `1.234.567.890` / `1,23 B` |
+
+  The `. for thousands` option renders numbers using Dutch locale conventions (`nl`), making it suitable for players in regions that use a period as a thousands separator and a comma as the decimal mark.
+</ParamField>
+
+<ParamField path="ScaleCutoff" type="number" default="999999">
+  The numeric threshold below which Cookie Monster renders numbers as plain integers (with locale-appropriate separators) instead of applying the chosen Scale.
+
+  - **Minimum:** 1
+  - **Maximum:** 999,999,999
+  - **Default:** 999,999
+
+  For example, with the default of 999,999 and Short scale selected, the number 500,000 is shown as `500,000` while 1,000,000 is shown as `1.00 M`.
+
+  Adjusting this upward is useful if you prefer to see exact values for numbers in the millions. Setting it to 1 forces the scale to apply to almost every number Cookie Monster displays.
+</ParamField>
+
+<Warning>
+  Setting **ScaleCutoff** above **999,999,999** may cause certain notation modes to behave unexpectedly, because the scale-suffix lookup logic is designed around groups of three digits above that boundary. Keep the value at or below 999,999,999 for reliable results.
+</Warning>
+
+<ParamField path="TimeFormat" type="enum" default="Time XXd, XXh, XXm, XXs">
+  Determines how Cookie Monster renders durations in tooltips, the statistics page, and the timer bar overlay.
+
+  | Option | Example: 90,061 seconds (1d 1h 1m 1s) |
+  |---|---|
+  | `Time XXd, XXh, XXm, XXs` | `1d, 1h, 1m, 1s` |
+  | `Time XX:XX:XX:XX:XX` | `00:01:01:01:01` (yy:dd:hh:mm:ss) |
+  | `Time XXx, XXx` | `1d, 1h` *(two most significant units only)* |
+
+  The digital-clock format (`XX:XX:XX:XX:XX`) renders years, days, hours, minutes, and seconds as zero-padded columns. If the duration exceeds 100 years the format returns the literal string `XX:XX:XX:XX:XX` as a sentinel. The abbreviated two-unit format strips all but the two most significant non-zero components, keeping labels compact in tight UI spaces such as the timer bar.
+</ParamField>
+
+<ParamField path="DetailedTime" type="enum" default="Detailed time ON">
+  Toggles between a compact abbreviated form and a fully spelled-out form for time strings in statistics and certain tooltips.
+
+  | Mode | Example |
+  |---|---|
+  | OFF | `2d, 4h, 30m, 15s` |
+  | ON | `2 days, 4 hours, 30 minutes, 15 seconds` |
+
+  Detailed time also correctly pluralises units (e.g., `1 day` vs `2 days`).
+</ParamField>
+
+<ParamField path="PPDisplayTime" type="enum" default="PP as value (standard)">
+  Controls whether the Payback Period (PP) metric is shown as its raw calculated value or converted to an approximate equivalent time duration.
+
+  | Mode | Behaviour |
+  |---|---|
+  | `PP as value (standard)` | PP is shown as a plain number (e.g., `1.23 B`). |
+  | `PP as time unit` | PP is shown as a time string (e.g., `2h, 34m`). |
+
+  The time-unit representation is an approximation — PP does not map perfectly onto a wall-clock duration because it is derived from CPS ratios, not a simple seconds figure. Use this mode as a rough intuitive guide rather than a precise measurement.
+</ParamField>
+
+## Scale Format Examples
+
+The table below shows how the number **1,234,567,890** (just over 1.2 billion) is rendered in each Scale mode with **ScaleDecimals** set to 2 and **ScaleSeparator** set to the standard (`.` for decimals).
+
+```
+Game's setting scale     →  depends on Cookie Clicker's own setting
+Metric                   →  1.23 G
+Short scale              →  1.23 B
+Short scale (Abbrev.)    →  1.23 B
+Scientific notation      →  1.23E+9
+Engineering notation     →  1.23E9
+```
+
+For a smaller number like **1,500** (below the default ScaleCutoff of 999,999):
+
+```
+All scale modes          →  1,500   (plain integer, no suffix)
+```
+
+For a very large number like **1,000,000,000,000** (1 trillion):
+
+```
+Metric                   →  1.00 T
+Short scale              →  1.00 Tr
+Short scale (Abbrev.)    →  1.00 T
+Scientific notation      →  1.00E+12
+Engineering notation     →  1.00E12
+```
+
+<Tip>
+  If you play in a region that uses commas as decimal separators (e.g., most of continental Europe), set **ScaleSeparator** to **`. for thousands`** so that `1.23 B` renders as `1,23 B` and thousands are separated by periods.
+</Tip>

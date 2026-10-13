@@ -1,0 +1,185 @@
+---
+title: "CookieMonsterData: Public API for Addon Developers"
+sidebarTitle: "CookieMonsterData"
+description: "Reference for window.CookieMonsterData, the global Cookie Monster exposes so other mods can read PP and colour ranks without reimplementing calculations."
+---
+
+Cookie Monster publishes its computed Payback Period (PP) rankings and colour classifications to the global object `window.CookieMonsterData` after the mod finishes loading. Other addons and userscripts can read this object directly to display or act on Cookie Monster's recommendations without duplicating the simulation logic. The object is refreshed on every game logic tick, and every field is a deep copy produced via `JSON.parse(JSON.stringify(...))`, so reading from it is safe — you will never accidentally mutate Cookie Monster's internal cache.
+
+## Availability
+
+`window.CookieMonsterData` is created during `InitializeCookieMonster()`, which runs as part of Cookie Monster's `init` hook when `Game.registerMod` is called. It is populated with data on the very first logic tick after that. Always guard your access with an existence check.
+
+```javascript
+// Safe pattern: wait until Cookie Monster has populated the object
+if (typeof window.CookieMonsterData !== 'undefined') {
+  // safe to read
+}
+```
+
+<Note>
+  `CookieMonsterData` is updated every game tick (via the `logic` hook). Because Cookie Monster writes deep copies of its internal cache rather than references, any snapshot you read will remain stable for the duration of your own tick handler — you do not need to clone the data again before working with it.
+</Note>
+
+---
+
+## Top-level Fields
+
+The four top-level fields map to the three building buy-quantities Cookie Monster tracks and the full upgrade list.
+
+<ResponseField name="Objects1" type="object" required>
+  A plain object keyed by building name (e.g. `"Cursor"`, `"Grandma"`, `"Farm"`) where each value describes the Payback Period metrics when buying **one** of that building.
+
+  <Expandable title="Entry shape">
+    <ResponseField name="pp" type="number" required>
+      Payback Period for buying 1 of this building. Computed as `max(price − bank, 0) / cps + price / Δcps`. **Lower is better.**
+    </ResponseField>
+    <ResponseField name="colour" type="string" required>
+      CSS class suffix indicating this building's PP rank relative to all other buy options. One of `'Blue'`, `'Green'`, `'Yellow'`, `'Orange'`, `'Red'`, `'Purple'`, or `'Gray'`. See the [Colour Scale](#colour-scale) section below for the full meaning of each value.
+    </ResponseField>
+    <ResponseField name="bonus" type="number" required>
+      The incremental cookies-per-second gain (Δcps) that purchasing one of this building would produce. This is the denominator used in the PP formula.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="Objects10" type="object" required>
+  Identical structure to `Objects1`, but all values are computed for buying **10** of each building in a single purchase.
+
+  <Expandable title="Entry shape">
+    <ResponseField name="pp" type="number" required>
+      Payback Period for a bulk buy of 10.
+    </ResponseField>
+    <ResponseField name="colour" type="string" required>
+      PP rank colour for the buy-10 option. Uses the same colour names as `Objects1`.
+    </ResponseField>
+    <ResponseField name="bonus" type="number" required>
+      Δcps gained from buying 10 of this building at once.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="Objects100" type="object" required>
+  Identical structure to `Objects1`, but all values are computed for buying **100** of each building in a single purchase.
+
+  <Expandable title="Entry shape">
+    <ResponseField name="pp" type="number" required>
+      Payback Period for a bulk buy of 100.
+    </ResponseField>
+    <ResponseField name="colour" type="string" required>
+      PP rank colour for the buy-100 option.
+    </ResponseField>
+    <ResponseField name="bonus" type="number" required>
+      Δcps gained from buying 100 of this building at once.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="Upgrades" type="object" required>
+  An array-like object keyed by upgrade name (e.g. `"Reinforced index finger"`) where each value describes the PP of purchasing that upgrade from the shop. Only upgrades currently visible in the shop are included.
+
+  <Expandable title="Entry shape">
+    <ResponseField name="pp" type="number" required>
+      Payback Period for buying this upgrade. Calculated using the same formula as buildings. `Infinity` when the upgrade provides no CPS change.
+    </ResponseField>
+    <ResponseField name="colour" type="string" required>
+      PP rank colour for this upgrade. `'Blue'` means the upgrade has a better PP than the single best building buy option. `'Gray'` means it has no measurable CPS impact.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Colour Scale
+
+Cookie Monster assigns one of seven colour values based on how a given PP compares to all other available options across buy-1, buy-10, and buy-100 quantities.
+
+| Colour value | Meaning |
+|---|---|
+| `'Blue'` | Better PP than the single best building option (upgrades only, or items below the PP seconds lower limit) |
+| `'Green'` | The single best PP across all options |
+| `'Yellow'` | Within the top 10 PP values |
+| `'Orange'` | Within the top 20 PP values |
+| `'Red'` | Within the top 30 PP values |
+| `'Purple'` | Worse than all top-30 options |
+| `'Gray'` | No meaningful PP (zero Δcps, already purchased, or excluded by a user setting) |
+
+The colour assigned by Cookie Monster reflects user settings such as **PPExcludeTop** (exclude the N best buildings from the comparison) and **PPOnlyConsiderBuyable** (mark unaffordable items red). Your addon should treat colour values as opaque rank indicators rather than absolute thresholds.
+
+---
+
+## Usage Example
+
+The snippet below shows how a third-party addon can iterate over all building buy-1 data and also read upgrade colours without re-implementing any PP logic.
+
+```javascript
+// Wait for Cookie Monster to initialize
+if (window.CookieMonsterData) {
+  const buildings = window.CookieMonsterData.Objects1;
+  Object.entries(buildings).forEach(([name, data]) => {
+    console.log(`${name}: PP=${data.pp}, colour=${data.colour}`);
+  });
+}
+```
+
+To also check upgrade rankings:
+
+```javascript
+if (window.CookieMonsterData) {
+  const upgrades = window.CookieMonsterData.Upgrades;
+  Object.entries(upgrades).forEach(([name, data]) => {
+    if (data.colour === 'Blue') {
+      console.log(`Buy upgrade first: ${name} (PP=${data.pp})`);
+    }
+  });
+}
+```
+
+To compare whether buying 10 of a building is currently better than buying 1:
+
+```javascript
+if (window.CookieMonsterData) {
+  const { Objects1, Objects10 } = window.CookieMonsterData;
+  Object.keys(Objects1).forEach((name) => {
+    if (Objects10[name].pp < Objects1[name].pp) {
+      console.log(`Buying 10 ${name} is more efficient than buying 1`);
+    }
+  });
+}
+```
+
+---
+
+## The Cache Sub-object
+
+In addition to the four PP fields documented above, `CookieMonsterData` also exposes a `Cache` sub-object populated by the internal `FillCMDCache` helper. This object is updated during the same logic tick and follows the same deep-copy guarantees.
+
+<ResponseField name="Cache" type="object">
+  Internal computed values forwarded from Cookie Monster's cache layer via `FillCMDCache`. Key names match the internal `Cache*` variable names with the `Cache` prefix removed. For example, `CacheMinPP` becomes `Cache.MinPP`.
+
+  <Expandable title="Known Cache fields">
+    <ResponseField name="MinPP" type="number">
+      The lowest PP value across all buildings and buy quantities (excluding any PPExcludeTop setting).
+    </ResponseField>
+    <ResponseField name="MinPPBulk" type="number">
+      The buy quantity (1, 10, or 100) that produces the `MinPP`.
+    </ResponseField>
+    <ResponseField name="PPArray" type="array">
+      Sorted array of `[pp, buyQuantity, price]` tuples for all building options, used internally to derive colour thresholds.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Note>
+  Variables such as `CacheLucky`, `CacheLuckyFrenzy`, `CacheConjure`, and the full suite of golden-cookie and wrinkler stats are computed in the framework's `saveData` but are **not** currently forwarded into `CookieMonsterData`. They remain internal to Cookie Monster's cache layer. Only values explicitly passed to `FillCMDCache` appear under `CookieMonsterData.Cache`.
+</Note>
+
+---
+
+## Requesting Additional Data
+
+Cookie Monster intentionally exposes only the data that is most commonly needed by other addons. The architecture makes it straightforward to add new fields.
+
+<Tip>
+  If you need additional data exposed on `CookieMonsterData` — such as wrinkler stats, lucky-cookie thresholds, or dragon aura details — please open a GitHub issue or submit a pull request at [github.com/CookieMonsterTeam/CookieMonster](https://github.com/CookieMonsterTeam/CookieMonster/issues). All suggestions are welcome.
+</Tip>

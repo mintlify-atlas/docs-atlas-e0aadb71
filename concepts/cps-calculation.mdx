@@ -1,0 +1,108 @@
+---
+title: "How Cookie Monster Calculates Cookies Per Second"
+sidebarTitle: "CPS Calculation"
+description: "Cookie Monster can use your current or a rolling-average CPS, optionally folding in wrinkler income. Learn every CPS mode and how it affects PP and timers."
+---
+
+Almost every number Cookie Monster shows — Payback Period values, timer countdowns, tooltip warnings for Lucky and Conjure reserves — ultimately depends on a single input: cookies per second. Cookie Monster gives you fine-grained control over how that CPS figure is computed. You can use the game's live CPS reading, a rolling historical average over anywhere from 10 seconds to 30 minutes, and you can optionally fold in the passive income produced by your wrinklers.
+
+## Current CPS vs. Average CPS
+
+The **`CPSMode`** setting (Calculation group) chooses the base CPS source:
+
+<Tabs>
+  <Tab title="Current CPS (default index 1)">
+    Cookie Monster reads `Game.cookiesPs` directly — the live cookies-per-second value reported by the base game at the moment of calculation. This reflects any active buff (Frenzy, Click Frenzy, Clot, etc.) immediately, which means PP values will swing dramatically while a Frenzy is running and snap back the instant it ends.
+
+    Use current CPS if you want real-time responsiveness and you're comfortable with the fact that PP rankings during a ×7 Frenzy reflect only that buffed state.
+  </Tab>
+  <Tab title="Average CPS">
+    Cookie Monster maintains an internal sliding-window queue of observed cookie gains, sampled once per real-world second. `CacheAverageCPS` is the mean of that queue over the window you select with **`AvgCPSHist`**. Buffs and debuffs are smoothed out over the window length, so PP values stay more stable during short-lived events.
+
+    Use average CPS if you want consistent PP comparisons that aren't thrown off by the current buff state.
+  </Tab>
+</Tabs>
+
+<Note>
+  The CPS mode you choose affects more than just PP labels. It also drives the countdown timers in the bottom bar, the time-to-afford estimates in building tooltips, and the bank-reserve warnings for Lucky!, Lucky! (Frenzy), Conjure Baked Goods, and Spontaneous Edifice. Switching modes mid-session therefore changes all of those displays simultaneously.
+</Note>
+
+## Average CPS History Window
+
+When average CPS mode is active, the **`AvgCPSHist`** setting controls how long the rolling window is:
+
+<ResponseField name="AvgCPSHist" type="select" default="Average CPS in past 1m (index 3)">
+  | Index | Window |
+  |---|---|
+  | 0 | Past 10 seconds |
+  | 1 | Past 15 seconds |
+  | 2 | Past 30 seconds |
+  | **3 (default)** | **Past 1 minute** |
+  | 4 | Past 5 minutes |
+  | 5 | Past 10 minutes |
+  | 6 | Past 15 minutes |
+  | 7 | Past 30 minutes |
+
+  Cookie Monster keeps a queue long enough to support the largest window (30 minutes) at all times, then slices out whichever tail length `AvgCPSHist` selects.
+</ResponseField>
+
+<Tip>
+  A window of **1 to 5 minutes** strikes a useful balance for most active sessions: short enough to adapt after you buy several buildings or pop wrinklers, but long enough that a single Frenzy doesn't dominate the average. If you regularly idle for long stretches, a 10- or 15-minute average reduces noise from accumulated wrinkler payouts.
+</Tip>
+
+## Average Clicks History Window
+
+Cookie Monster separately tracks your clicking rate in a parallel sliding-window queue, controlled by **`AvgClicksHist`**:
+
+<ResponseField name="AvgClicksHist" type="select" default="Average clicks in past 1s (index 0)">
+  | Index | Window |
+  |---|---|
+  | **0 (default)** | **Past 1 second** |
+  | 1 | Past 5 seconds |
+  | 2 | Past 10 seconds |
+  | 3 | Past 15 seconds |
+  | 4 | Past 30 seconds |
+
+  The averaged click rate is included in CPS estimates wherever clicking income is relevant (for example, when factoring click-boosting upgrades into projections).
+</ResponseField>
+
+## Wrinkler Income (CalcWrink)
+
+Wrinklers suck cookies off your CPS but pay back more than they took when you pop them. Cookie Monster can treat that deferred income as part of your effective CPS. The **`CalcWrink`** setting (Calculation group) has three modes:
+
+<Tabs>
+  <Tab title="OFF (default index 0)">
+    Wrinkler income is ignored entirely. `CacheAverageCPS` reflects only your bank growth, with no contribution from wrinklers currently attached to the Big Cookie. PP values and timers are based purely on what you accumulate as cookies directly.
+  </Tab>
+  <Tab title="ON — all wrinklers (index 1)">
+    The combined cookies-per-second being sucked by **all** active wrinklers is added into `CacheAverageCPS`. The effective wrinkler CPS contribution is the rate at which cookies accumulate inside all wrinklers.
+
+    The underlying return formula accounts for the wrinkler multiplier: a normal wrinkler returns **1.1×** the cookies it sucked (110%), and a shiny wrinkler returns **3×**. Cookie Monster tracks total wrinkler cookies as they grow, so the average gain from the wrinkler pool feeds naturally into the rolling queue.
+  </Tab>
+  <Tab title="ON — single fattest wrinkler (index 2)">
+    Only the largest (fattest) non-shiny wrinkler's accumulation rate is added to `CacheAverageCPS`. This mode is useful if you pop wrinklers one at a time and want a conservative estimate of how much income you can bank from a single pop, rather than assuming you'll cash out all wrinklers simultaneously.
+  </Tab>
+</Tabs>
+
+<Note>
+  Changing `CalcWrink` triggers an immediate re-simulation (`SimDoSims = true`) so that all downstream PP and timing calculations update with the new wrinkler configuration right away.
+</Note>
+
+## NoGoldSwitch CPS
+
+When the **Golden Switch** buff is active, `Game.cookiesPs` reflects the multiplied CPS it grants. However, the Lucky! golden-cookie reward and the Conjure Baked Goods grimoire spell both calculate their payout based on CPS *without* the Golden Switch. Cookie Monster maintains a separate cached value — **`CacheNoGoldSwitchCookiesPS`** — for these calculations:
+
+```javascript
+// From NoGoldSwitchCPS.js
+if (Game.Has('Golden switch [off]')) {
+  CacheNoGoldSwitchCookiesPS = CalcNoGoldSwitchCPS();
+} else {
+  CacheNoGoldSwitchCookiesPS = Game.cookiesPs;
+}
+```
+
+When the Golden Switch is **not** active, `CacheNoGoldSwitchCookiesPS` equals `Game.cookiesPs` and has no effect. When it **is** active, Cookie Monster uses the un-buffed CPS for the reserve warnings in building and upgrade tooltips, so the Lucky! and Conjure warnings remain accurate and don't mislead you into thinking your reserve is safer than it is.
+
+<Warning>
+  If you have the Golden Switch active, the tooltip bank-reserve warnings (Lucky!, Lucky! Frenzy, Conjure Baked Goods) are calculated against your **base CPS without the Golden Switch multiplier**. This is intentional — those golden cookie rewards themselves are capped by your base CPS, not the boosted value. Don't be surprised if the warning threshold seems lower than your current displayed CPS.
+</Warning>

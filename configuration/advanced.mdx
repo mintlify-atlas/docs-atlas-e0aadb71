@@ -1,0 +1,148 @@
+---
+title: "Advanced Cookie Monster Configuration Settings and Behaviors"
+sidebarTitle: "Advanced"
+description: "Deep-dive into Cookie Monster's specialized settings: Rigidel mode, PP filters, bulk-buy blocking, sorting, wrinkler controls, and display extras."
+---
+
+Beyond the main colour and notation options, Cookie Monster exposes a collection of more specialised settings that let you fine-tune purchasing discipline, building sort order, UI layout, and game-specific mechanics like the Rigidel pantheon god bonus. These settings are spread across the **Colours**, **BarsDisplay**, and **Miscellaneous** categories in the Options menu, but are grouped here thematically because they share the common theme of changing *how* Cookie Monster evaluates or presents options rather than just how they look.
+
+## PP Filter Settings
+
+These settings alter the logic Cookie Monster uses when deciding which buildings and upgrades to colour-code as optimal, without changing your cookies or purchases in any way.
+
+<ParamField path="PPOnlyConsiderBuyable" type="enum" default="Don't ignore non-buyable">
+  Controls whether items you cannot currently afford are treated as if they have the worst possible PP.
+
+  | Option | Behaviour |
+  |---|---|
+  | `Don't ignore non-buyable` | All items, including those you cannot yet afford, receive their normal PP-based colour. |
+  | `Ignore non-buyable` | Items you cannot afford right now are coloured as if their PP rank is the worst (gray/purple), so the highlighted best options are always within your current budget. |
+
+  This is particularly useful in the late game when your bank is large enough to afford most things, but also during stretches where you are saving up for a specific purchase and want to focus on what you can actually buy today.
+</ParamField>
+
+<ParamField path="PPExcludeTop" type="enum" default="Don't ignore any">
+  Strips the top 1, 2, or 3 best-ranked items from colour-coding entirely, so the next tier becomes the new visual highlight.
+
+  | Option | Effect |
+  |---|---|
+  | `Don't ignore any` | All items are colour-coded normally. |
+  | `Ignore 1st best` | The single best option receives no colour highlight; the 2nd best becomes the new green. |
+  | `Ignore 1st and 2nd best` | The top two options are uncoloured; the 3rd best becomes green. |
+  | `Ignore 1st, 2nd and 3rd best` | The top three options are uncoloured. |
+
+  This is useful when you have already decided on your next few purchases and want Cookie Monster to highlight what comes *after* them, or when you are deliberately avoiding the obvious best pick for strategic reasons.
+</ParamField>
+
+<ParamField path="PPRigidelMode" type="enum" default="Rigidel mode OFF">
+  Instructs Cookie Monster to ignore all **buy-1** options when calculating and displaying PP colours, so that you only see the colour-coded ranks of items you could buy in bulk (×10 or ×100). This keeps your total building count at a multiple of 10, which is required to maintain the Rigidel bonus.
+
+  | Option | Behaviour |
+  |---|---|
+  | `Rigidel mode OFF` | Normal PP colouring for individual purchases. |
+  | `Rigidel mode ON` | Buy-1 options are excluded from colour-coding; only bulk options are ranked. |
+</ParamField>
+
+<Note>
+  **What is Rigidel?** Rigidel is a pantheon god in Cookie Clicker who grants a CPS bonus when your total building count ends in **0** (i.e., is a multiple of 10). If you buy a single building and push your count from 100 to 101, you lose the bonus until you reach 110. Enable Rigidel mode only while Rigidel is actually slotted into one of the three pantheon diamond/ruby/jade slots — leaving it on when Rigidel is not active will hide potentially useful individual-purchase recommendations for no benefit.
+</Note>
+
+<ParamField path="PPSecondsLowerLimit" type="number" default="0">
+  Sets a CPS-based floor for what counts as an "optimal" purchase. Any building or upgrade that costs fewer than the specified **seconds of CPS** is highlighted as optimal regardless of its PP rank.
+
+  - **Minimum:** 0
+  - **Maximum:** Infinity
+  - **Default:** 0 (disabled)
+
+  For example, setting this to `60` means anything that costs less than 60 seconds' worth of your current CPS is always labelled as the best buy, even if its raw PP rank would otherwise put it in the orange or red tier.
+
+  Setting to `0` disables the feature entirely.
+</ParamField>
+
+<Tip>
+  Combine **PPSecondsLowerLimit** with **PPOnlyConsiderBuyable** for a tighter buying discipline: the lower limit ensures you always spend on cheap items (preventing cookie hoarding), while "ignore non-buyable" ensures the highlighted options are always within reach. Together they guide you towards spending cookies efficiently without overextending your bank.
+</Tip>
+
+## Bulk-Buy Protection
+
+<ParamField path="BulkBuyBlock" type="enum" default="Block bulk buying ON">
+  Prevents Cookie Monster from letting you accidentally buy a partial batch when you are in buy-10 or buy-100 mode and cannot afford the full quantity.
+
+  | Option | Behaviour |
+  |---|---|
+  | `Block bulk buying OFF` | Standard game behaviour — clicking buy-10 when you can only afford 7 buys 7. |
+  | `Block bulk buying ON` | The buy button does nothing if you cannot afford all items in the selected batch, preventing unintended partial purchases. |
+
+  This is especially useful in Rigidel mode, where accidentally buying 7 buildings instead of 10 would move your total count to a non-multiple of 10 and cost you the Rigidel bonus mid-session.
+</ParamField>
+
+## Sorting Settings
+
+<ParamField path="SortBuildings" type="enum" default="Sort buildings: default">
+  Controls the display order of buildings in the store panel.
+
+  | Option | Sort Key |
+  |---|---|
+  | `Sort buildings: default` | Cookie Clicker's original order (cheapest to most expensive). |
+  | `Sort buildings: PP of x1 purchase` | Sorted by the PP of buying exactly one, best PP first. |
+  | `Sort buildings: PP of selected bulk mode` | Sorted by the PP of buying in the currently selected bulk amount (×1, ×10, ×100). |
+  | `Sort buildings: price until next achievement` | Sorted by how many cookies you need to reach the next building-count achievement, cheapest gap first. |
+</ParamField>
+
+<ParamField path="SortUpgrades" type="enum" default="Sort upgrades: default">
+  Controls the display order of available upgrades.
+
+  | Option | Sort Key |
+  |---|---|
+  | `Sort upgrades: default` | Cookie Clicker's original order. |
+  | `Sort upgrades: PP` | Sorted by PP, best (lowest) PP first. |
+</ParamField>
+
+## Display and Layout Settings
+
+<ParamField path="UpgradesNeverCollapse" type="enum" default="Upgrades always expanded OFF">
+  When ON, upgrade sections are always expanded to show all available upgrades regardless of how many there are. Cookie Clicker collapses long upgrade lists by default; this toggle overrides that behaviour so you never have to manually expand the upgrade area.
+</ParamField>
+
+<ParamField path="HideSectionsButtons" type="enum" default="Hide buildings/upgrades button OFF">
+  When ON, a pair of toggle buttons appear in the right column allowing you to hide or show the buildings panel and the upgrades panel independently. Useful on smaller screens or when you want to focus on a single panel.
+</ParamField>
+
+<ParamField path="WrinklerButtons" type="enum" default="Extra wrinkler buttons ON">
+  When ON, two extra buttons appear below the big cookie: **Pop all wrinklers** and **Pop fattest wrinkler**. These complement Cookie Clicker's own wrinkler management controls and save you from clicking each wrinkler individually.
+</ParamField>
+
+<ParamField path="DragonAuraInfo" type="enum" default="Extra dragon aura info ON">
+  When ON, the dragon aura selection interface shows additional information: the CPS change and cost delta that would result from equipping each aura. This makes it easier to evaluate aura swaps without leaving the interface to check your stats.
+</ParamField>
+
+<ParamField path="GrimoireBar" type="enum" default="Grimoire magic meter timer ON">
+  When ON, a timer overlay appears on the Grimoire magic meter widget showing how long until the meter is completely full. Useful for planning when to cast your next spell without having to watch the meter refill in real time.
+</ParamField>
+
+## Settings at a Glance
+
+<Accordion title="PP Discipline Quick Reference">
+
+  | Goal | Settings to use |
+  |---|---|
+  | Only highlight affordable items | `PPOnlyConsiderBuyable` → Ignore non-buyable |
+  | Skip the obvious best pick | `PPExcludeTop` → Ignore 1st best |
+  | Maintain Rigidel building-count multiples | `PPRigidelMode` → ON + `BulkBuyBlock` → ON |
+  | Always spend when items are cheap | `PPSecondsLowerLimit` → set to desired seconds |
+  | Strict spend-only-on-budget discipline | `PPOnlyConsiderBuyable` ON + `PPSecondsLowerLimit` > 0 |
+
+</Accordion>
+
+<Accordion title="Layout Quick Reference">
+
+  | Goal | Settings to use |
+  |---|---|
+  | Always see all upgrades | `UpgradesNeverCollapse` → ON |
+  | Hide panels to save screen space | `HideSectionsButtons` → ON |
+  | Quick wrinkler management | `WrinklerButtons` → ON |
+  | Evaluate dragon aura swaps in-context | `DragonAuraInfo` → ON |
+  | Know when to cast next Grimoire spell | `GrimoireBar` → ON |
+  | See best buildings without scrolling | `SortBuildings` → PP of x1 purchase |
+
+</Accordion>

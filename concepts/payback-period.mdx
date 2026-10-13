@@ -1,0 +1,84 @@
+---
+title: "Payback Period: How Cookie Monster Ranks Purchases"
+sidebarTitle: "Payback Period"
+description: "Payback Period (PP) is Cookie Monster's core efficiency index for buildings and upgrades. Lower PP means a better purchase — here's how it's calculated."
+---
+
+Cookie Monster's most fundamental feature is the **Payback Period (PP)** — a numeric index assigned to every building and upgrade that tells you how efficient each purchase is relative to your current cookies-per-second (CPS). Rather than asking "which building is cheapest?" or "which adds the most CPS?", PP combines both dimensions into a single comparable number. The lower the PP, the more efficient the purchase.
+
+## The Formula
+
+At its heart, the Payback Period is computed from two terms added together:
+
+```
+PP = max(cost − cookies_in_bank, 0) / cps  +  cost / Δcps
+```
+
+Each term answers a different question:
+
+| Term | Variable | Meaning |
+|---|---|---|
+| `max(cost − cookies_in_bank, 0)` | Shortfall | How many cookies you still need to afford the item (zero if you can already afford it) |
+| `/ cps` | Time-to-afford | How long at your current CPS it takes to earn that shortfall |
+| `cost` | Full price | The total cookie cost of the item |
+| `/ Δcps` | Time-to-recoup | How long it takes the CPS *gain* from buying to pay back the full cost |
+
+`Δcps` is the simulated change in cookies-per-second you would gain by making this purchase. Cookie Monster runs a full simulation — it buys the item in a virtual copy of your game state and measures the difference — so synergies, multipliers, and milestone bonuses are all captured automatically.
+
+<Note>
+  PP is a **relative efficiency index**, not a literal countdown timer. It does not predict exactly how many seconds until a purchase "pays for itself." Two items with PP values of 500 and 1000 should be read as "the first is roughly twice as efficient right now," not as raw second counts. If you want a time-like display, enable **PP as time unit** in the Notation settings — but even then the label is an approximation.
+</Note>
+
+## Achievement Chaining
+
+Cookie Monster calculates Δcps by simulating everything a purchase would trigger. If buying your 100th Grandma also unlocks an achievement that permanently boosts your income, which in turn crosses a milestone that unlocks a new upgrade — CM follows the entire chain before settling on Δcps. This means a building on the verge of an achievement milestone often has a significantly lower PP than its raw price/CPS ratio would suggest.
+
+## Buy-1, Buy-10, and Buy-100 Comparisons
+
+Cookie Monster calculates PP separately for three purchase quantities:
+
+<Steps>
+  <Step title="Calculate PP for buy-1">
+    The standard single-purchase PP using the formula above, simulating the purchase of exactly one unit.
+  </Step>
+  <Step title="Calculate PP for buy-10">
+    The combined cost and combined Δcps for buying ten units at once, accounting for the price scaling applied to bulk purchases.
+  </Step>
+  <Step title="Calculate PP for buy-100">
+    The same for one hundred units, which often crosses multiple achievement thresholds and can produce a dramatically lower PP than the buy-1 option.
+  </Step>
+  <Step title="Pick the best option">
+    All three PP values are entered into a single sorted list alongside every other building option. The color assigned to a building reflects whichever of its three quantities ranked best in that global comparison.
+  </Step>
+</Steps>
+
+<Tip>
+  When a buy-10 option outranks all buy-1 options, Cookie Monster highlights the building to tell you that buying ten at once is more efficient than buying any single building one at a time. This typically happens near achievement thresholds (e.g., the 50th, 100th, or 150th of a building type) where the bulk purchase triggers a milestone that dramatically boosts Δcps. If you see that signal, it's worth checking whether you're close to a count that ends in 0.
+</Tip>
+
+## The PPSecondsLowerLimit Shortcut
+
+Beyond rank-based coloring, Cookie Monster also supports an absolute threshold. The **`PPSecondsLowerLimit`** setting (Colours group, default: `0`) lets you specify a number of seconds. Any building or upgrade whose cost is less than that many seconds of your current CPS will be marked as optimal (light blue) regardless of its rank.
+
+```
+item is optimal  ⟺  cost / CPS  <  PPSecondsLowerLimit
+```
+
+Setting this to `30` means any item you can afford with less than 30 seconds of passive income is always treated as an easy buy. Set it to `0` (the default) to disable the threshold and rely purely on rank-based coloring.
+
+## Displaying PP Values
+
+Cookie Monster offers two display modes for PP, controlled by the **`PPDisplayTime`** setting in the Notation group:
+
+<Tabs>
+  <Tab title="PP as Value (Default)">
+    The raw numeric PP result is shown directly. This is the most accurate representation and allows precise comparisons between items. A building showing `PP: 423.17` is ranked against all other buildings by that exact number.
+  </Tab>
+  <Tab title="PP as Time Unit">
+    Cookie Monster formats the PP as an approximate time string (e.g., `7m 3s`). This is easier to read at a glance but is explicitly an approximation — the PP formula is not a direct time prediction. The formatted value respects your chosen **TimeFormat** notation setting.
+  </Tab>
+</Tabs>
+
+<Note>
+  The **`PPDisplayTime`** setting description in Cookie Monster itself warns: "PP does not translate directly into a time unit and this is therefore only an approximation." Use the time display for intuition, but rely on the raw value — and the color ranking — for precise decision-making.
+</Note>

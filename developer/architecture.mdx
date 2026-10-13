@@ -1,0 +1,184 @@
+---
+title: "Cookie Monster Source Code Architecture Guide"
+sidebarTitle: "Architecture"
+description: "A walkthrough of the src/ directory layout, mod lifecycle hooks, simulation engine design, and build pipeline used in Cookie Monster's codebase."
+---
+
+Cookie Monster is built around one central principle: **never modify live game data**. All calculations that require a hypothetical game state — such as "what would my CPS be if I bought this building?" — are performed on copies of the game's data structures. This means Cookie Monster's analysis runs safely alongside any game session without any risk of corrupting the player's save. Understanding this design philosophy is the starting point for working on the codebase.
+
+---
+
+## Repository Layout
+
+The source code lives entirely under `src/`. Each subdirectory owns a distinct responsibility, and files in one directory should only call into another via clearly defined imports.
+
+<CardGroup cols={2}>
+  <Card title="Cache" icon="database">
+    Functions for creating and storing computed data. Covers PP calculations, CPS stats, wrinkler tracking, dragon aura states, pantheon gods, and golden/wrath cookie multipliers.
+  </Card>
+  <Card title="Config" icon="sliders">
+    Functions for reading and manipulating Cookie Monster's configuration. Handles setting toggle state and bridges between the UI and the framework's `saveData`.
+  </Card>
+  <Card title="Data" icon="file-code">
+    Hard-coded values: settings definitions, game data constants, PP colour scales, section header labels, and mod metadata (`VersionMajor`, `VersionMinor`, `ModDescription`).
+  </Card>
+  <Card title="Disp" icon="display">
+    All UI rendering logic — the PP bars on building tiles, upgrade bar coloring, tooltip injection, the statistics page sections, favicon updates, and tab title formatting.
+  </Card>
+  <Card title="InitSaveLoad" icon="plug">
+    Cookie Clicker Mod API registration. Contains the three hook functions — `init`, `load`, and `save` — that the game calls when the mod is registered, a save is loaded, or a save is written.
+  </Card>
+  <Card title="Main" icon="rotate">
+    The main loop hook, the `InitializeCookieMonster` startup sequence, functions that replace or wrap native game elements (tooltips, grimoire), and wrinkler click-area detection.
+  </Card>
+  <Card title="Sim" icon="flask">
+    The simulation engine. Copies game state into `Sim` structures and runs hypothetical buy/sell operations to compute Δcps values without touching the live game state.
+  </Card>
+</CardGroup>
+
+---
+
+## Directory Reference
+
+| Directory | Contents |
+|---|---|
+| `Cache` | Functions related to creating and storing data cache (PP, CPS, stats, wrinklers, dragon auras, pantheon gods) |
+| `Config` | Functions related to manipulating CM configuration (setting toggles) |
+| `Data` | Hard-coded values (settings definitions, game data, scales, section headers) |
+| `Disp` | Functions related to displaying CM's UI (bars, tooltips, statistics page, menus, favicon, tab title) |
+| `InitSaveLoad` | Cookie Clicker Mod API registration: `init`, `load`, and `save` hooks |
+| `Main` | Main loop, initialization, game element replacement, wrinkler area detection |
+| `Sim` | Simulation engine: copies game state to calculate PP without modifying live data |
+
+---
+
+## Mod Lifecycle
+
+Cookie Monster integrates with Cookie Clicker through the game's standard Mod API. The lifecycle follows four distinct phases.
+
+<Steps>
+  <Step title="Registration">
+    `src/CookieMonster.js` is the entry point. It imports `init`, `load`, and `save` from `src/InitSaveLoad/` and calls:
+
+    ```javascript
+    Game.registerMod('CookieMonster', { init, load, save });
+    ```
+
+    On the Steam version, registration is delayed by 2 000 ms to allow the game to finish its own initialization before the mod hooks run.
+  </Step>
+
+  <Step title="Initialization (init hook)">
+    The game calls `init()` immediately after `registerMod`. Inside `src/InitSaveLoad/init.js`:
+
+    1. The Cookie Monster Mod Framework (`@cookiemonsterteam/cookiemonsterframework`) is initialized and the mod is registered as `'cookieMonsterMod'`.
+    2. `InitializeCookieMonster()` (in `src/Main/Initialization.js`) runs the full startup sequence:
+       - Creates `window.CookieMonsterData = {}`
+       - Calls `InitData()` to populate Sim structures from the current game state
+       - Calls `InitCache()` to pre-populate all cache variables
+       - Builds all DOM elements: bars, tooltips, wrinkler buttons, CSS areas, section hide buttons, and favicon
+       - Replaces native game tooltips and wraps `Game.CalculateGains`
+    3. Three hooks are registered with the game: `'click'` → `CMClickHook`, `'draw'` → `CMDrawHook`, `'logic'` → `CMLoopHook`.
+    4. If no saved settings are found in `Game.modSaveData`, `load('{}')` applies defaults.
+  </Step>
+
+  <Step title="Main Loop (logic hook)">
+    `CMLoopHook` (in `src/Main/LoopHook.js`) runs every game logic tick. Its responsibilities in order are:
+
+    1. Detect and handle ascend/descend state changes.
+    2. If new mods have loaded since last tick, re-run `InitData()` and `InitCache()` to pick up any changes.
+    3. When `SimDoSims` is set (meaning CPS has changed), run the full simulation suite: income cache, golden/wrath cookie multipliers, statistics, missing upgrades, cookie chains, dragon cost, pantheon gods, season specials, and the Chocolate Egg sell-all calculation.
+    4. If the "Fierce Hoarder" dragon aura changed, recalculate building prices.
+    5. Call `LoopCache()` to refresh PP values, wrinkler data, and average CPS stats.
+    6. Run all state-change detectors: ticker fortunes, season popups, garden ticks, grimoire meter, wrinkler count changes, and golden cookie timers.
+  </Step>
+
+  <Step title="Save / Load">
+    `save()` and `load()` in `src/InitSaveLoad/` persist and restore Cookie Monster's settings through the Cookie Clicker Mod Framework's `saveData` mechanism. Settings are stored as a JSON string alongside the game's own save data and survive game reloads and cloud saves.
+  </Step>
+</Steps>
+
+<Note>
+  Cookie Monster deliberately avoids modifying game data in place. All PP and Δcps calculations operate on copies of `Game.Objects` and `Game.Upgrades` held inside the `Sim` layer. This means CM should never corrupt your cookie count, building quantities, or upgrade state — even if an exception occurs mid-calculation.
+</Note>
+
+---
+
+## Simulation Engine
+
+The `Sim` directory contains the core innovation that makes Cookie Monster's PP calculations accurate: a full copy of the game's building and upgrade state that can be mutated freely.
+
+When Cookie Monster needs to know "how much would my CPS change if I bought one more Grandma?", it:
+
+1. Calls `InitData()` to snapshot the current `Game.Objects` and `Game.Upgrades` into the `Sim` structures.
+2. Applies a hypothetical purchase inside the `Sim` layer (incrementing the simulated building count, applying any associated upgrade unlocks, etc.).
+3. Computes the resulting simulated CPS.
+4. Subtracts the current live CPS to get Δcps.
+5. Discards all simulated changes — the live game state is untouched.
+
+This process repeats for every building at quantities 1, 10, and 100, and for every visible upgrade. The `SimDoSims` flag in `src/Sim/VariablesAndData.js` gates this expensive pass so it only re-runs when the game signals that CPS has actually changed.
+
+---
+
+## Settings Persistence
+
+Cookie Monster does not maintain its own save format. Instead, it depends on `@cookiemonsterteam/cookiemonsterframework` (version `0.2.3` as declared in `package.json`) for all settings storage and retrieval. Settings are accessed at runtime via:
+
+```javascript
+Game.mods.cookieMonsterFramework.saveData.cookieMonsterMod.settings
+```
+
+This means all settings survive game saves and are compatible with the Cookie Clicker cloud-save system. Developers adding a new setting must register it with the framework in `src/Data/settings.js` and handle the default value in the `load` hook.
+
+---
+
+## Build Pipeline
+
+Cookie Monster uses Webpack to bundle the ES-module source tree into a single distributable file. The `package.json` `scripts` section defines four build commands:
+
+```bash
+npm install          # install dependencies (requires GitHub Package Registry auth)
+npm run build-dev    # lint + test + build CookieMonsterDev.js
+npm run build-final  # lint + test + build CookieMonster.js (production)
+npm test             # run Mocha unit tests
+```
+
+<Tabs>
+  <Tab title="build-dev">
+    Runs `eslint → mocha → webpack --env minimize`. Outputs `dist/CookieMonsterDev.js` with an inline source map. This is the file you load into Cookie Clicker to test your changes locally.
+
+    The CI pipeline verifies that the committed `dist/CookieMonsterDev.js` matches a fresh webpack build on every push to `main`, `dev`, and `gh-pages`, and on every pull request.
+  </Tab>
+  <Tab title="build-final">
+    Runs `eslint → mocha → webpack --env minimize --env finalfile`. Outputs `dist/CookieMonster.js` and a companion `CookieMonster.js.map` source map hosted at `https://cookiemonsterteam.github.io/CookieMonster/dist/`. This command is only run when cutting a production release to `master`.
+  </Tab>
+  <Tab title="test">
+    Invokes Mocha with `--recursive` (configured in `.mocharc.json`) to find and run all test files. Tests use the `chai` assertion library. CI also runs this step independently via `npx mocha`.
+  </Tab>
+</Tabs>
+
+### Webpack Configuration
+
+`webpack.config.cjs` exports a function that accepts the `env` object passed via `--env` flags:
+
+```javascript
+// webpack.config.cjs (simplified)
+entry: './src/CookieMonster.js',
+output: {
+  filename: env.finalfile ? 'CookieMonster.js' : 'CookieMonsterDev.js',
+  path: path.resolve(__dirname, 'dist'),
+},
+```
+
+The `minimize` flag controls Terser minification and whether source maps are inline (dev) or external (production). The `finalfile` flag selects the production output filename.
+
+---
+
+## Continuous Integration
+
+The GitHub Actions workflow in `.github/workflows/CI.yml` triggers on every push to `main`, `dev`, and `gh-pages`, as well as all pull requests. It runs on `ubuntu-latest` with Node.js 22 and performs:
+
+1. Dependency installation via `npm ci` (using `GITHUB_TOKEN` for the GitHub Package Registry).
+2. ESLint check (`npx eslint`).
+3. Mocha test suite (`npx mocha`).
+4. Verification that `dist/CookieMonsterDev.js` matches a fresh build.
+5. On pushes to `master` only: verification that `dist/CookieMonster.js` matches a fresh production build.

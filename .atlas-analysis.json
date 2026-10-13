@@ -1,0 +1,102 @@
+{
+  "projectType": "general",
+  "projectName": "Cookie Monster",
+  "projectDescription": "A Cookie Clicker addon that provides Payback Period calculations, color-coded building/upgrade rankings, statistics panels, timers, tooltips, and notifications to help players optimize their game without acting as a cheat tool.",
+  "theme": "almond",
+  "primaryColor": "#c07830",
+  "lightColor": "#f5e6cc",
+  "darkColor": "#5c3010",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/payback-period",
+              "concepts/color-coding",
+              "concepts/cps-calculation"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/buildings-upgrades",
+              "features/timers-bars",
+              "features/tooltips",
+              "features/statistics",
+              "features/notifications"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/settings-overview",
+              "configuration/notation",
+              "configuration/colours",
+              "configuration/advanced"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer Reference",
+        "groups": [
+          {
+            "group": "For Developers",
+            "pages": [
+              "developer/cookiemonsterdata",
+              "developer/architecture",
+              "developer/contributing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Payback Period (PP) index for all buildings and upgrades",
+    "Color-coded building and upgrade rankings (blue, green, yellow, orange, red, purple, gray)",
+    "Bottom bar showing bonus income, PP, and time-left per building",
+    "Timer bar for golden cookies, season popups, Frenzy/Clot/Click Frenzy, and autosave",
+    "Enhanced tooltips for buildings, upgrades, grimoire, pantheon gods, garden plots, stock market, and sugar lumps",
+    "Statistics page extension with Lucky/Chain cookie values, wrinkler rewards, prestige info, and achievement tracking",
+    "Sound and browser notifications for golden cookies, season popups, wrinklers, garden ticks, and full magic meter",
+    "Customizable number notation (short scale, scientific, engineering, metric)",
+    "Favicon updates to reflect golden or wrath cookie presence",
+    "CookieMonsterData global object exposing PP and colour data to other addons",
+    "Building lock buttons and section hide buttons",
+    "Rigidel mode and bulk-buy blocking for optimized pantheon play"
+  ],
+  "publicApiSurface": [
+    "window.CookieMonsterData.Objects1 — cached PP/colour/bonus data for buy-1 buildings",
+    "window.CookieMonsterData.Objects10 — cached PP/colour/bonus data for buy-10 buildings",
+    "window.CookieMonsterData.Objects100 — cached PP/colour/bonus data for buy-100 buildings",
+    "window.CookieMonsterData.Upgrades — cached PP/colour data for all upgrades",
+    "Game.mods.cookieMonsterFramework.saveData.cookieMonsterMod.settings — all user settings object",
+    "Game.registerMod('CookieMonster', { init, load, save }) — Cookie Clicker Mod API registration",
+    "settings.CPSMode — toggle current vs average CPS for calculations",
+    "settings.Scale — number notation scale (metric, short scale, scientific, engineering)",
+    "settings.BuildColour — toggle color-coding for buildings",
+    "settings.UpBarColour — toggle color-coding and bar for upgrades",
+    "settings.BotBar — toggle bottom bar display",
+    "settings.TimerBar — toggle timer bar display",
+    "settings.GCTimer — toggle golden cookie countdown timer",
+    "settings.Favicon — toggle favicon updates",
+    "settings.Stats — toggle Cookie Monster statistics page extension",
+    "settings.MissingUpgrades — show missing upgrades in statistics",
+    "settings.MissingAchievements — show missing achievements in statistics",
+    "settings.GCNotification / GCFlash / GCSound — golden cookie notification controls",
+    "settings.WrinklerButtons — toggle wrinkler pop buttons",
+    "settings.PPRigidelMode — ignore buy-1 options for Rigidel pantheon god strategy"
+  ]
+}

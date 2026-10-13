@@ -1,0 +1,52 @@
+---
+title: "Cookie Monster: Cookie Clicker Addon Overview"
+sidebarTitle: "Introduction"
+description: "Cookie Monster is a Cookie Clicker addon (v2.058) that adds PP rankings, color-coded shops, timers, enriched tooltips, and detailed stats — all optional."
+---
+
+Cookie Monster is a free, open-source addon for [Cookie Clicker](https://orteil.dashnet.org/cookieclicker/) that layers a rich suite of analytical tools directly on top of the base game. At its heart the mod computes a **Payback Period (PP)** index for every building and upgrade in your shop, color-codes each item from light-blue (best) through green, yellow, orange, red, and purple (worst) so you can see at a glance where your cookies are best invested, and surfaces detailed stats, timers, and enhanced tooltips that the vanilla game does not provide. Every single feature is individually toggleable, so you can dial in exactly how much assistance you want — from a simple number formatter all the way up to a fully guided shopping advisor.
+
+<Note>
+  Cookie Monster is **not a cheat interface**. It never grants extra cookies, manipulates save files, or automates gameplay. It only reads game state and displays additional information. Golden-cookie helpers and similar features can be switched off entirely if you prefer a more hands-off experience.
+</Note>
+
+## What Cookie Monster provides
+
+Cookie Monster v**2.058** ships with the following core capabilities:
+
+- **Payback Period (PP) index** — a time-based efficiency score for every building and upgrade, calculated as `max(cost − cookies in bank, 0) / cps + cost / Δcps`. Lower is better.
+- **Color-coded shop** — buildings and upgrades are highlighted in up to seven distinct colors that rank them by PP so the best purchase is always obvious.
+- **Enhanced tooltips** — hovering any building or upgrade shows projected CPS gains, PP values, and unlock chain information that Cookie Clicker itself omits.
+- **Bottom info bar** — a persistent bar below the game canvas shows live CPS, bank totals, time-to-next-milestone, and other at-a-glance figures.
+- **Timers** — on-screen countdowns for golden cookies, seasons, and other timed events.
+- **Statistics panel additions** — extra rows in the in-game stats screen covering efficiency data, historical CPS, and upgrade impact.
+- **Notifications** — optional audio and visual alerts for golden cookies, wrath cookies, and season changes.
+
+## How to load Cookie Monster
+
+Cookie Monster is distributed as a single compiled JavaScript file hosted on GitHub Pages. There are three ways to load it:
+
+| Method | Best for |
+|---|---|
+| **Bookmarklet** | Quick, one-click activation per session |
+| **Browser console** | One-off testing or troubleshooting |
+| **Userscript** (Tampermonkey / Greasemonkey) | Automatic load every time the game opens |
+
+Full step-by-step instructions for each method are on the Installation page.
+
+## Explore the docs
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Step-by-step instructions for the bookmarklet, browser console, and userscript methods.
+  </Card>
+  <Card title="Payback Period" icon="clock" href="/concepts/payback-period">
+    Understand the PP formula, what "lower is better" means, and how CM uses it to rank purchases.
+  </Card>
+  <Card title="Buildings & Upgrades" icon="store" href="/features/buildings-upgrades">
+    How color-coding, buy-10 recommendations, and upgrade light-blue highlighting work in the shop.
+  </Card>
+  <Card title="Statistics" icon="chart-bar" href="/features/statistics">
+    The extra statistics and info bar that Cookie Monster adds to the vanilla game.
+  </Card>
+</CardGroup>

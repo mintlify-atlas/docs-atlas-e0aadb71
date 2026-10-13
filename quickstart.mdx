@@ -1,47 +1,77 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get Started with Cookie Monster in Minutes"
+sidebarTitle: "Quickstart"
+description: "Load Cookie Monster, read the version popup, spot color-coded buildings, find CM settings in Options, and understand the bottom info bar — in minutes."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+Once Cookie Monster is loaded into Cookie Clicker, several visual changes appear immediately without any additional configuration. This page walks you through each of those changes so you know exactly what you are looking at the first time you run the mod. Nothing is permanent — every feature described here can be turned off individually from the settings menu if you decide you prefer the vanilla view.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+<Note>
+  Every feature Cookie Monster adds is individually toggleable. If a particular overlay, color, timer, or stat is distracting you, open the Options menu and scroll to the **Cookie Monster** section to switch it off. You are never locked in to the full experience.
+</Note>
 
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+## First-run walkthrough
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Load the mod and watch for the version popup">
+    After activating Cookie Monster via your chosen method (bookmarklet, console, or userscript), the game displays a small in-game notification confirming the mod loaded successfully, including the current version number (v2.058 at time of writing). Dismiss the popup — Cookie Monster is now active.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+  <Step title="Notice the color-coded shop">
+    Look at the **buildings panel** on the right side of the screen. Each building's name and price now appear in one of up to seven colors:
 
-    ```bash
-    your-cli init
-    ```
+    | Color | Meaning |
+    |---|---|
+    | **Light Blue** | This upgrade has a better PP than any available building |
+    | **Green** | Best PP among all available buildings |
+    | **Yellow** | Within the top 10 best PPs |
+    | **Orange** | Within the top 20 best PPs |
+    | **Red** | Within the top 30 best PPs |
+    | **Purple** | Worse than the top 30 best PPs |
+    | **Gray** | No CPS change — PP cannot be calculated |
+
+    The upgrade panel at the top of the shop follows the same scheme, with light-blue reserved for upgrades that beat every building's current PP.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Check the bottom info bar">
+    A new bar appears at the very bottom of the game canvas. It displays live figures including your current cookies-per-second, total cookies baked, time remaining until your next milestone, and other at-a-glance statistics. The bar updates in real time as your CPS changes.
+  </Step>
+  <Step title="Hover a building tooltip">
+    Hover your cursor over any building in the shop. The tooltip now includes additional rows that the vanilla game omits:
 
-    ```bash
-    your-cli start
-    ```
+    - The building's **Payback Period** expressed in time units
+    - The **CPS gain** that purchasing this building would add
+    - Any **achievement unlock chains** that this purchase would trigger, and how those chain bonuses affect the PP calculation
+  </Step>
+  <Step title="Open the Options menu to find Cookie Monster settings">
+    Click the **Options** button in the top menu bar of Cookie Clicker to open the settings panel. Scroll down past the vanilla game settings until you reach the **Cookie Monster** section. All of Cookie Monster's individual feature toggles live here — colors, timers, notifications, the bottom bar, and more. Each setting includes a short description of what it controls.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## What you are seeing: a quick visual guide
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+### Color-coded buildings and upgrades
+
+The color highlighting is driven by Cookie Monster's **Payback Period (PP)** calculation. PP measures roughly how long it will take a purchase to pay for itself in additional cookies earned. A lower PP is better — a building that pays itself back in one hour beats one that takes three hours. Cookie Monster continuously recalculates PP for every item in the shop as your CPS and bank change, so colors update live.
+
+Cookie Monster also evaluates **buy-10 bundles**. If buying 10 of a particular building gives a better PP than buying any single item, the bundle price is highlighted accordingly. This means you may sometimes see a building's buy-10 button colored green even when its buy-1 button is not.
+
+### The bottom bar
+
+The persistent bar across the bottom of the screen is Cookie Monster's at-a-glance statistics strip. It is designed to surface numbers that require navigation or math to reach in vanilla Cookie Clicker — your effective CPS after all buffs, the raw cost of your next upgrade milestone, and similar values. You can customize which figures appear in the bar from the Cookie Monster section of the Options panel.
+
+### Enhanced tooltips
+
+Every building and upgrade tooltip gains extra rows from Cookie Monster. The most important additions are the PP value for that specific item and a projected CPS-after-purchase figure. For upgrades that unlock achievements or feed back into other bonuses, the tooltip also shows the downstream value of those chains so you understand the full picture before you buy.
+
+## Where to go next
+
+<CardGroup cols={3}>
+  <Card title="Payback Period" icon="clock" href="/concepts/payback-period">
+    Deep dive into the PP formula and why lower values always indicate a better buy.
+  </Card>
+  <Card title="Color Coding" icon="palette" href="/concepts/color-coding">
+    Full reference for every color Cookie Monster uses and the thresholds that trigger each one.
+  </Card>
+  <Card title="Settings Overview" icon="sliders" href="/configuration/settings-overview">
+    Complete list of every Cookie Monster setting, its default value, and what it controls.
+  </Card>
+</CardGroup>

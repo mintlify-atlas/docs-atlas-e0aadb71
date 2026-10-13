@@ -1,0 +1,112 @@
+---
+title: "Install Cookie Monster in Cookie Clicker"
+sidebarTitle: "Installation"
+description: "Three ways to load Cookie Monster into Cookie Clicker: a one-click bookmarklet, a browser-console paste, or a permanent userscript via Tampermonkey."
+---
+
+Cookie Monster is distributed as a single compiled JavaScript file hosted on GitHub Pages and loaded directly into a running Cookie Clicker session — there is nothing to download and no browser extension required for the bookmarklet or console methods. Choose whichever approach fits your workflow best; all three methods load the same production build and produce an identical in-game experience.
+
+<Tip>
+  Before reporting a bug, test with the **dev build** first. The dev URL always tracks the latest fixes ahead of the next stable release:
+  `https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonsterDev.js`
+  — swap it in place of the production URL in any of the three methods below.
+</Tip>
+
+## Production and dev URLs
+
+| Build | URL |
+|---|---|
+| **Production** (stable) | `https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js` |
+| **Dev** (latest fixes) | `https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonsterDev.js` |
+
+## Loading order
+
+<Warning>
+  If you use other content mods alongside Cookie Monster, **load Cookie Monster last**. Loading it before other content mods can cause conflicts because those mods may add buildings or upgrades that Cookie Monster then fails to find during its initialization pass.
+</Warning>
+
+## Choose your installation method
+
+<Tabs>
+  <Tab title="Bookmarklet">
+    A bookmarklet is a browser bookmark whose URL is a snippet of JavaScript. Clicking it while Cookie Clicker is open injects Cookie Monster into the running game. You only need to set it up once; after that a single click activates the mod each session.
+
+    <Steps>
+      <Step title="Copy the bookmarklet code">
+        Select and copy the entire block below, including the `javascript:` prefix:
+
+        ```javascript
+        javascript: (function () {
+          Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js');
+        })();
+        ```
+      </Step>
+      <Step title="Create a new bookmark">
+        Open your browser's bookmark manager (Ctrl+Shift+B in Chrome/Firefox) and create a new bookmark. Give it any name you like — "Cookie Monster" works well.
+      </Step>
+      <Step title="Paste the code as the URL">
+        In the **URL** (or **Address**) field of the new bookmark, paste the code you copied in Step 1. Save the bookmark.
+      </Step>
+      <Step title="Activate the mod">
+        Navigate to Cookie Clicker in your browser, wait for the game to finish loading, then click the bookmark. Cookie Monster will load and display a version popup to confirm successful installation.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Browser Console">
+    If the bookmarklet method does not work in your browser (some browsers restrict `javascript:` URLs in the address bar), you can paste the loader code directly into the browser's developer console instead.
+
+    <Steps>
+      <Step title="Open Cookie Clicker">
+        Navigate to [https://orteil.dashnet.org/cookieclicker/](https://orteil.dashnet.org/cookieclicker/) and wait for the game to fully load.
+      </Step>
+      <Step title="Open the browser console">
+        Press **F12** (or **Cmd+Option+J** on macOS) to open DevTools, then click the **Console** tab.
+      </Step>
+      <Step title="Paste and run the loader">
+        Copy the code below, paste it into the console prompt, and press **Enter**:
+
+        ```javascript
+        Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js');
+        ```
+      </Step>
+      <Step title="Confirm the version popup">
+        Cookie Monster will load momentarily and display an in-game popup showing the current version number. Close the popup to start playing with the mod active.
+      </Step>
+    </Steps>
+
+    <Note>
+      The console method is session-only. Refreshing the page unloads Cookie Monster and you will need to paste the command again. For a persistent setup, use the bookmarklet or userscript method instead.
+    </Note>
+  </Tab>
+
+  <Tab title="Userscript">
+    A userscript manager such as [Tampermonkey](https://www.tampermonkey.net/) or [Greasemonkey](https://www.greasespot.net/) can run JavaScript automatically whenever you visit a matching URL. With the Cookie Monster userscript installed, the mod loads itself every time you open Cookie Clicker — no clicks required.
+
+    <Steps>
+      <Step title="Install a userscript manager">
+        If you do not already have one, install **Tampermonkey** (Chrome, Firefox, Edge, Safari) or **Greasemonkey** (Firefox) from your browser's extension store.
+      </Step>
+      <Step title="Open the CookieMonster.user.js file">
+        Navigate to the [CookieMonster.user.js file](https://github.com/CookieMonsterTeam/CookieMonster/blob/master/CookieMonster.user.js) in the GitHub repository and click **Raw**. Tampermonkey/Greasemonkey will detect the `.user.js` extension and offer to install the script automatically.
+      </Step>
+      <Step title="Confirm the installation">
+        Review the script details in the manager's install dialog and click **Install** (Tampermonkey) or **Add** (Greasemonkey). The script targets the following URLs:
+
+        ```
+        https://orteil.dashnet.org/cookieclicker/
+        http://orteil.dashnet.org/cookieclicker/
+        https://cookieclicker.ee/
+        http://cookieclicker.ee/
+        ```
+      </Step>
+      <Step title="Open Cookie Clicker">
+        Visit either of the URLs above. The userscript waits for the game's `Game.ready` flag before calling `Game.LoadMod`, so it is safe even if the page is slow to load. Cookie Monster will appear automatically once the game is ready.
+      </Step>
+    </Steps>
+
+    <Note>
+      The userscript uses a polling interval to detect when `Game.ready` is `true` before injecting Cookie Monster, which prevents race-condition errors that can occur when loading mods before the game engine has finished initializing.
+    </Note>
+  </Tab>
+</Tabs>

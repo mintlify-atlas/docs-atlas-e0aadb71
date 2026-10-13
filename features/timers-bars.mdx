@@ -1,0 +1,170 @@
+---
+title: "Timer Bar and Golden Cookie Timers in Cookie Monster"
+sidebarTitle: "Timers & Bars"
+description: "Cookie Monster adds a live timer bar for golden cookies, buffs, and autosave, plus a countdown overlaid on the cookie itself and browser tab alerts."
+---
+
+Cookie Monster provides several real-time timing aids so you never miss a golden cookie or a buff expiry. The main **timer bar** gives you a compact, color-coded progress display for every active countdown. The **golden cookie timer** overlays a live second count directly on top of the golden cookie image. The **Grimoire bar** overlays your magic meter refill progress. And the **favicon** and **title** settings keep you informed even when the game is in a background tab.
+
+## The Timer Bar
+
+Enable the timer bar with the **TimerBar** setting (default: ON). When active, a slim bar appears either at the top-left or bottom of the game window (controlled by **TimerBarPos**), showing one row per active countdown.
+
+### Tracked Timers
+
+The timer bar tracks the following events:
+
+<CardGroup cols={2}>
+  <Card title="Next Cookie" icon="cookie">
+    Two-segment bar showing the minimum wait window (gray) and the random spawn window (purple) until the next golden or wrath cookie can appear.
+  </Card>
+  <Card title="Next Reindeer" icon="snowflake">
+    Active during the Christmas season. Shows the minimum wait (gray) and random window (orange) until the next reindeer spawns.
+  </Card>
+  <Card title="Frenzy" icon="bolt">
+    Yellow bar tracking remaining Frenzy buff duration.
+  </Card>
+  <Card title="Blood Frenzy" icon="droplet">
+    Green bar tracking remaining Blood Frenzy duration.
+  </Card>
+  <Card title="Clot" icon="circle-xmark">
+    Red bar tracking remaining Clot debuff duration.
+  </Card>
+  <Card title="Click Frenzy" icon="hand-pointer">
+    Blue bar tracking remaining Click Frenzy duration.
+  </Card>
+  <Card title="Dragonflight" icon="dragon">
+    Pink bar tracking remaining Dragonflight duration.
+  </Card>
+  <Card title="Dragon Harvest" icon="seedling">
+    Brown bar tracking remaining Dragon Harvest duration.
+  </Card>
+  <Card title="Autosave" icon="floppy-disk">
+    Purple bar counting down to the next autosave (shown only when AutosaveTimerBar is ON and autosave is enabled in the game).
+  </Card>
+</CardGroup>
+
+Any other active buff not in the list above (such as seasonal or mod-added buffs) will also appear, colored purple by default.
+
+### Timer Bar Position
+
+**TimerBarPos** controls where the bar is anchored:
+
+- **Top left** (default, value `0`) — the bar renders just below the top-left corner of the game canvas.
+- **Bottom** (value `1`) — the bar renders at the bottom edge of the canvas, above the bottom bar if that is also enabled.
+
+### Timer Bar Overlay
+
+**TimerBarOverlay** controls what text is drawn on top of each progress bar segment:
+
+| Value | Behavior |
+|-------|----------|
+| `0` — OFF | No text on bars |
+| `1` — Seconds only | Each bar segment shows the remaining seconds |
+| `2` — Full (default) | Each bar segment shows seconds **and** percentage remaining |
+
+The overlay text for percentage applies to buff timers. The "Next Cookie" and "Next Reindeer" bars show seconds in their segments regardless of the overlay level when overlay ≥ 1.
+
+### Autosave Timer Bar
+
+**AutosaveTimerBar** (default: OFF) adds a dedicated countdown row to the timer bar that shows the seconds remaining until the game's next autosave. The row is only visible when the game's autosave preference is enabled.
+
+## The Golden Cookie Countdown Timer
+
+The **GCTimer** setting (default: ON) overlays a live second countdown directly on the golden (or wrath) cookie sprite the moment it spawns. The number updates every frame and counts down to zero as the cookie's lifespan expires. This gives you an immediate sense of urgency without needing to look at the timer bar.
+
+<Tip>
+  If you find the on-cookie number distracting, you can disable **GCTimer** while keeping the timer bar's "Next Cookie" row enabled. You get the pre-spawn countdown without a number on the cookie itself.
+</Tip>
+
+The timer is rendered as a transparent overlay with the same `z-index` as the game's shimmer layer, so it is always visible but does not block mouse clicks on the cookie.
+
+## Grimoire Magic Meter Bar
+
+When the Wizard Tower minigame is unlocked, the **GrimoireBar** setting (default: ON) adds a small overlay on the Grimoire magic meter showing the time remaining until the meter is completely full. This lets you quickly plan when you will be able to cast your next spell without doing arithmetic on the displayed magic fraction.
+
+## Favicon Updates
+
+The **Favicon** setting (default: ON) changes the browser tab favicon whenever a golden or wrath cookie is present on screen. At a glance you can tell from your bookmarks bar or tab strip whether a cookie is waiting to be clicked.
+
+When the cookie despawns or is clicked, the favicon reverts to the standard Cookie Clicker icon.
+
+## Tab Title Updates
+
+The **Title** setting updates the browser tab title to reflect cookie timers and spawned cookies:
+
+| Value | Behavior |
+|-------|----------|
+| `0` — OFF | Title is unchanged from the vanilla game |
+| `1` — ON | Title is continuously updated with golden cookie / season popup countdown timers |
+| `2` — Pinned tab highlight | Title only changes when a golden cookie or reindeer **spawns**, inserting a `!` prefix — the rest of the time the title is left alone |
+
+<Tip>
+  **Pinned tab highlight mode** is ideal when Cookie Clicker is running in a pinned browser tab. Most browsers show only the favicon for pinned tabs, but a title change still triggers the tab to visually indicate activity. Set Title to `2` and you will get a flicker on your pinned tab each time a golden cookie or reindeer appears, without the title constantly cycling through timer numbers.
+</Tip>
+
+## Color Meanings in the Timer Bar
+
+The timer bar uses the same global color scheme as the building color system. The specific colors for each timer type are:
+
+| Timer | Color |
+|-------|-------|
+| Next Cookie — min window | Gray (`#b3b3b3`) |
+| Next Cookie — spawn window | Purple (`#ff00ff`) |
+| Next Reindeer — min window | Gray |
+| Next Reindeer — spawn window | Orange (`#ff7f00`) |
+| Frenzy | Yellow (`#ffff00`) |
+| Blood Frenzy | Green (`#00ff00`) |
+| Clot | Red (`#ff0000`) |
+| Click Frenzy | Blue (`#4bb8f0`) |
+| Dragonflight | Pink (`#ff1493`) |
+| Dragon Harvest | Brown (`#8b4513`) |
+| Autosave | Purple |
+| Other buffs | Purple (fallback) |
+
+All color values are the defaults from the Colours settings group and can be customized there.
+
+## Settings Reference
+
+<AccordionGroup>
+  <Accordion title="TimerBar — Timer bar toggle">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Enables the timer bar that shows countdowns for golden cookies, active buffs, and optionally autosave.
+  </Accordion>
+  <Accordion title="TimerBarPos — Timer bar position">
+    **Group:** BarsDisplay | **Default:** Top left
+
+    Positions the timer bar at the top-left or bottom of the game window.
+  </Accordion>
+  <Accordion title="TimerBarOverlay — Timer bar overlay text">
+    **Group:** BarsDisplay | **Default:** Full
+
+    Controls what text is drawn on the progress bars: nothing, seconds only, or seconds and percentage.
+  </Accordion>
+  <Accordion title="AutosaveTimerBar — Autosave countdown">
+    **Group:** BarsDisplay | **Default:** OFF
+
+    Adds a countdown row to the timer bar showing seconds until the next game autosave.
+  </Accordion>
+  <Accordion title="GCTimer — Golden cookie countdown overlay">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Overlays a live second counter on each golden or wrath cookie sprite once it has spawned.
+  </Accordion>
+  <Accordion title="GrimoireBar — Magic meter refill timer">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Shows a time overlay on the Grimoire magic meter indicating how long until it is completely full.
+  </Accordion>
+  <Accordion title="Favicon — Favicon updates">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Updates the browser tab favicon to indicate a golden or wrath cookie is present on screen.
+  </Accordion>
+  <Accordion title="Title — Tab title updates">
+    **Group:** NotificationGeneral | **Default:** ON
+
+    Updates the browser tab title with timer info; pinned tab highlight mode only changes the title on cookie spawn.
+  </Accordion>
+</AccordionGroup>

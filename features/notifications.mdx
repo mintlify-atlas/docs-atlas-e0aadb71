@@ -1,0 +1,321 @@
+---
+title: "Notifications and Alerts in Cookie Monster"
+sidebarTitle: "Notifications"
+description: "Cookie Monster alerts you to golden cookies, season popups, garden ticks, magic full, and wrinklers via browser notifications, screen flashes, and sounds."
+---
+
+Cookie Monster can alert you to important in-game events through three independent channels: **browser notifications** (OS-level popups), **screen flashes** (a full-window color overlay), and **sound alerts** (a short audio clip). Each event type has its own set of toggles so you can mix and match — for example, enabling a sound for golden cookies but only a flash for wrinklers. Every alert channel is independently configurable per event.
+
+<Warning>
+  Browser notifications require explicit permission from your operating system and browser. The first time you enable a notification toggle in Cookie Monster, your browser will prompt you to grant notification permission for the Cookie Clicker page. If you deny the prompt, browser notifications will not fire until you manually grant permission in your browser settings. Screen flash and sound alerts are not affected by this permission.
+</Warning>
+
+## General Sound Setting
+
+The **GeneralSound** setting (default: ON) controls how Cookie Monster interacts with the base game's volume slider:
+
+- **ON** — CM respects the game's volume setting. If you have muted the game, CM sounds are also silenced.
+- **OFF** — CM ignores the game's volume slider entirely. Sounds play at the volume set in each alert's own `Volume` control, even when the base game is muted. This is useful for keeping the game silent during gameplay while still receiving audio alerts for important events like golden cookies.
+
+## Event Types
+
+---
+
+### 1. Golden Cookie
+
+A golden (or wrath) cookie has appeared on screen.
+
+<Tabs>
+  <Tab title="Browser Notification">
+    **Setting:** `GCNotification` | **Default:** OFF
+
+    Sends an OS notification with the title "Golden Cookie Spawned" and the message "A Golden Cookie has spawned. Click it now!" Enabling this setting will prompt for browser notification permission on the first use.
+  </Tab>
+  <Tab title="Screen Flash">
+    **Setting:** `GCFlash` | **Default:** ON
+
+    Flashes the entire game window with the color set by **ColourGCFlash**.
+
+    **Flash Color Setting:** `ColourGCFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `GCSound` | **Default:** ON
+
+    Plays an audio clip when a golden cookie spawns.
+
+    **Volume:** `GCVolume` | **Default:** 100
+
+    **Sound URL:** `GCSoundURL`
+    ```
+    https://freesound.org/data/previews/66/66717_931655-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### 2. Fortune Cookie Ticker
+
+A fortune cookie upgrade has appeared in the news ticker.
+
+<Tabs>
+  <Tab title="Browser Notification">
+    **Setting:** `FortuneNotification` | **Default:** OFF
+
+    Sends an OS notification when the fortune cookie upgrade appears in the ticker.
+  </Tab>
+  <Tab title="Screen Flash">
+    **Setting:** `FortuneFlash` | **Default:** ON
+
+    Flashes the game window with the color set by **ColourFortuneFlash**.
+
+    **Flash Color Setting:** `ColourFortuneFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `FortuneSound` | **Default:** ON
+
+    Plays an audio clip when the fortune cookie ticker entry appears.
+
+    **Volume:** `FortuneVolume` | **Default:** 100
+
+    **Sound URL:** `FortuneSoundURL`
+    ```
+    https://freesound.org/data/previews/174/174027_3242494-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### 3. Season Popup
+
+A seasonal special (such as a reindeer during Christmas) has spawned.
+
+<Tabs>
+  <Tab title="Browser Notification">
+    **Setting:** `SeaNotification` | **Default:** OFF
+
+    Sends an OS notification when a season popup event triggers.
+  </Tab>
+  <Tab title="Screen Flash">
+    **Setting:** `SeaFlash` | **Default:** ON
+
+    Flashes the game window with the color set by **ColourSeaFlash**.
+
+    **Flash Color Setting:** `ColourSeaFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `SeaSound` | **Default:** ON
+
+    Plays an audio clip when a season popup spawns.
+
+    **Volume:** `SeaVolume` | **Default:** 100
+
+    **Sound URL:** `SeaSoundURL`
+    ```
+    https://www.freesound.org/data/previews/121/121099_2193266-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### 4. Garden Tick
+
+The Farm minigame garden has ticked (plants have grown or changed state).
+
+<Info>
+  There is no browser notification option for garden ticks — only a screen flash and sound are available for this event.
+</Info>
+
+<Tabs>
+  <Tab title="Screen Flash">
+    **Setting:** `GardFlash` | **Default:** ON
+
+    Flashes the game window with the color set by **ColourGardFlash**.
+
+    **Flash Color Setting:** `ColourGardFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `GardSound` | **Default:** ON
+
+    Plays an audio clip on each garden tick.
+
+    **Volume:** `GardVolume` | **Default:** 100
+
+    **Sound URL:** `GardSoundURL`
+    ```
+    https://freesound.org/data/previews/103/103046_861714-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### 5. Magic Full
+
+The Wizard Tower Grimoire magic meter has reached its maximum.
+
+<Tabs>
+  <Tab title="Browser Notification">
+    **Setting:** `MagicNotification` | **Default:** OFF
+
+    Sends an OS notification when the Grimoire magic meter is completely full.
+  </Tab>
+  <Tab title="Screen Flash">
+    **Setting:** `MagicFlash` | **Default:** ON
+
+    Flashes the game window with the color set by **ColourMagicFlash**.
+
+    **Flash Color Setting:** `ColourMagicFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `MagicSound` | **Default:** ON
+
+    Plays an audio clip when the magic meter reaches maximum.
+
+    **Volume:** `MagicVolume` | **Default:** 100
+
+    **Sound URL:** `MagicSoundURL`
+    ```
+    https://freesound.org/data/previews/221/221683_1015240-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### 6. Wrinkler Appeared
+
+A new wrinkler has latched onto the cookie.
+
+<Tabs>
+  <Tab title="Browser Notification">
+    **Setting:** `WrinklerNotification` | **Default:** OFF
+
+    Sends an OS notification with "A Wrinkler appeared" when a new wrinkler attaches.
+  </Tab>
+  <Tab title="Screen Flash">
+    **Setting:** `WrinklerFlash` | **Default:** ON
+
+    Flashes the game window with the color set by **ColourWrinklerFlash**.
+
+    **Flash Color Setting:** `ColourWrinklerFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `WrinklerSound` | **Default:** ON
+
+    Plays an audio clip when a wrinkler appears.
+
+    **Volume:** `WrinklerVolume` | **Default:** 100
+
+    **Sound URL:** `WrinklerSoundURL`
+    ```
+    https://freesound.org/data/previews/124/124186_8043-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### 7. Maximum Wrinklers
+
+The maximum number of wrinklers allowed by the game has been reached.
+
+When the wrinkler cap is hit, Cookie Monster fires the **WrinklerMax** alerts instead of the standard Wrinkler alerts for that final wrinkler. This lets you use a different (louder or more distinct) sound or flash color to signal that your wrinklers are full and ready to be popped for maximum cookie yield.
+
+<Tabs>
+  <Tab title="Browser Notification">
+    **Setting:** `WrinklerMaxNotification` | **Default:** OFF
+
+    Sends an OS notification with "Maximum Wrinklers Reached" when the cap is hit.
+  </Tab>
+  <Tab title="Screen Flash">
+    **Setting:** `WrinklerMaxFlash` | **Default:** ON
+
+    Flashes the game window with the color set by **ColourWrinklerMaxFlash**.
+
+    **Flash Color Setting:** `ColourWrinklerMaxFlash` | **Default:** `#ffffff` (white)
+  </Tab>
+  <Tab title="Sound">
+    **Setting:** `WrinklerMaxSound` | **Default:** ON
+
+    Plays an audio clip when the maximum wrinkler count is reached.
+
+    **Volume:** `WrinklerMaxVolume` | **Default:** 100
+
+    **Sound URL:** `WrinklerMaxSoundURL`
+    ```
+    https://freesound.org/data/previews/152/152743_15663-lq.mp3
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Custom Sound URLs
+
+Every sound alert accepts a direct URL to any audio file as its source. The URL must point directly to the audio resource (not an HTML page hosting the file).
+
+<Tip>
+  To use a custom sound, paste a direct link to an MP3, OGG, or WAV file into the Sound URL field for that event. Free sound libraries like Freesound.org provide direct preview links (ending in `-lq.mp3` for low-quality previews) that work well for this purpose. Make sure the server hosting the file allows cross-origin requests, otherwise the browser will block playback.
+</Tip>
+
+## Default Sound URL Reference
+
+| Event | Default Sound URL |
+|-------|-------------------|
+| Golden Cookie | `https://freesound.org/data/previews/66/66717_931655-lq.mp3` |
+| Fortune Cookie | `https://freesound.org/data/previews/174/174027_3242494-lq.mp3` |
+| Season Popup | `https://www.freesound.org/data/previews/121/121099_2193266-lq.mp3` |
+| Garden Tick | `https://freesound.org/data/previews/103/103046_861714-lq.mp3` |
+| Magic Full | `https://freesound.org/data/previews/221/221683_1015240-lq.mp3` |
+| Wrinkler Appeared | `https://freesound.org/data/previews/124/124186_8043-lq.mp3` |
+| Maximum Wrinklers | `https://freesound.org/data/previews/152/152743_15663-lq.mp3` |
+
+## Settings Reference
+
+| Setting | Group | Default | Description |
+|---------|-------|---------|-------------|
+| `GeneralSound` | NotificationGeneral | ON | When ON, CM respects the game's volume slider; when OFF, sounds play regardless of game volume |
+| `GCNotification` | NotificationGC | OFF | Browser notification on golden cookie spawn |
+| `GCFlash` | NotificationGC | ON | Screen flash on golden cookie spawn |
+| `ColourGCFlash` | NotificationGC | `#ffffff` | Flash color for golden cookie |
+| `GCSound` | NotificationGC | ON | Sound alert on golden cookie spawn |
+| `GCVolume` | NotificationGC | 100 | Volume for golden cookie sound |
+| `GCSoundURL` | NotificationGC | (see above) | URL of the golden cookie alert sound |
+| `FortuneNotification` | NotificationFC | OFF | Browser notification for fortune ticker |
+| `FortuneFlash` | NotificationFC | ON | Screen flash for fortune ticker |
+| `ColourFortuneFlash` | NotificationFC | `#ffffff` | Flash color for fortune ticker |
+| `FortuneSound` | NotificationFC | ON | Sound alert for fortune ticker |
+| `FortuneVolume` | NotificationFC | 100 | Volume for fortune ticker sound |
+| `FortuneSoundURL` | NotificationFC | (see above) | URL of the fortune ticker sound |
+| `SeaNotification` | NotificationSea | OFF | Browser notification for season popup |
+| `SeaFlash` | NotificationSea | ON | Screen flash for season popup |
+| `ColourSeaFlash` | NotificationSea | `#ffffff` | Flash color for season popup |
+| `SeaSound` | NotificationSea | ON | Sound alert for season popup |
+| `SeaVolume` | NotificationSea | 100 | Volume for season popup sound |
+| `SeaSoundURL` | NotificationSea | (see above) | URL of the season popup sound |
+| `GardFlash` | NotificationGard | ON | Screen flash on garden tick |
+| `ColourGardFlash` | NotificationGard | `#ffffff` | Flash color for garden tick |
+| `GardSound` | NotificationGard | ON | Sound alert on garden tick |
+| `GardVolume` | NotificationGard | 100 | Volume for garden tick sound |
+| `GardSoundURL` | NotificationGard | (see above) | URL of the garden tick sound |
+| `MagicNotification` | NotificationMagi | OFF | Browser notification when magic meter is full |
+| `MagicFlash` | NotificationMagi | ON | Screen flash when magic meter is full |
+| `ColourMagicFlash` | NotificationMagi | `#ffffff` | Flash color for magic full |
+| `MagicSound` | NotificationMagi | ON | Sound alert when magic meter is full |
+| `MagicVolume` | NotificationMagi | 100 | Volume for magic full sound |
+| `MagicSoundURL` | NotificationMagi | (see above) | URL of the magic full sound |
+| `WrinklerNotification` | NotificationWrink | OFF | Browser notification when a wrinkler appears |
+| `WrinklerFlash` | NotificationWrink | ON | Screen flash when a wrinkler appears |
+| `ColourWrinklerFlash` | NotificationWrink | `#ffffff` | Flash color for wrinkler appearance |
+| `WrinklerSound` | NotificationWrink | ON | Sound alert when a wrinkler appears |
+| `WrinklerVolume` | NotificationWrink | 100 | Volume for wrinkler sound |
+| `WrinklerSoundURL` | NotificationWrink | (see above) | URL of the wrinkler sound |
+| `WrinklerMaxNotification` | NotificationWrinkMax | OFF | Browser notification when maximum wrinklers is reached |
+| `WrinklerMaxFlash` | NotificationWrinkMax | ON | Screen flash when maximum wrinklers is reached |
+| `ColourWrinklerMaxFlash` | NotificationWrinkMax | `#ffffff` | Flash color for maximum wrinklers |
+| `WrinklerMaxSound` | NotificationWrinkMax | ON | Sound alert when maximum wrinklers is reached |
+| `WrinklerMaxVolume` | NotificationWrinkMax | 100 | Volume for maximum wrinklers sound |
+| `WrinklerMaxSoundURL` | NotificationWrinkMax | (see above) | URL of the maximum wrinklers sound |

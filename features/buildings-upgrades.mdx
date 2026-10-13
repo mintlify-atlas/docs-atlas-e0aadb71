@@ -1,0 +1,163 @@
+---
+title: "Building and Upgrade Display in Cookie Monster"
+sidebarTitle: "Buildings & Upgrades"
+description: "Cookie Monster color-codes buildings and upgrades by payback period, adds a sortable bottom bar, an upgrade counter bar, and bulk-buy blocking."
+---
+
+Cookie Monster enhances the right-hand store column of Cookie Clicker by color-coding every building and upgrade according to its payback period (PP), giving you at-a-glance guidance on what to buy next. On top of the color system, CM adds a persistent bottom bar that summarizes every building's key stats, an upgrade counter bar fixed at the top of the screen, flexible sort options, and several quality-of-life controls such as building lock buttons and bulk-buy blocking.
+
+## Color-Coded Building Borders
+
+When the **BuildColour** setting is enabled (default: ON), each building's price label is recolored to reflect its PP rank relative to all other available buildings. The best buy is highlighted green, the next tier yellow, and so on down to purple and gray for the worst options. The color scheme is fully customizable through the individual color settings in the Colours group.
+
+<Note>
+  Color coding only applies in **buy mode** (not sell mode). When you switch to sell mode, all price label colors are removed and Cookie Monster instead corrects the vanilla game's display of the sell price.
+</Note>
+
+The bulk-buy mode affects which PP values drive the colors. When you switch between buying ×1, ×10, and ×100, CM re-calculates PP for that quantity and recolors accordingly.
+
+See [Color Coding](/concepts/color-coding) for the full mapping of colors to PP ranks, and [Payback Period](/concepts/payback-period) for how PP is calculated.
+
+## Color-Coded Upgrade Borders and the Upgrade Bar
+
+The **UpBarColour** setting controls both the small color dot added to each upgrade icon and the upgrade summary bar above the store:
+
+| Value | Behavior |
+|-------|----------|
+| `0` — OFF | No color dot, no bar |
+| `1` — Colours with bar ON | Color dot on each upgrade **and** the counter bar is shown |
+| `2` — Colours without bar ON | Color dot on each upgrade only, counter bar hidden |
+
+The **upgrade bar** (shown when `UpBarColour = 1`) is a single row of seven colored numbers directly above the upgrades section. Each number counts how many in-store upgrades fall into that PP color tier. Hovering the bar reveals a full legend explaining each color's meaning.
+
+### Upgrade Bar Fixed Position
+
+By default (and with **UpgradeBarFixedPos** ON), the upgrade bar is pinned to the top of the screen so it stays visible even when you scroll down through a long building list. Set this to OFF if you prefer the bar to scroll with the rest of the content.
+
+## Sorting Buildings
+
+The **SortBuildings** setting reorders the building list in the store:
+
+<CardGroup cols={2}>
+  <Card title="Default" icon="list-ol">
+    Buildings appear in the original Cookie Clicker order (cursor first, antimatter condenser last).
+  </Card>
+  <Card title="PP of ×1 Purchase" icon="arrow-up-1-9">
+    Sorts by payback period of a single purchase, best PP (green) first, regardless of the current bulk mode.
+  </Card>
+  <Card title="PP of Selected Bulk Mode" icon="layer-group">
+    Sorts by PP for the currently selected bulk quantity (×1, ×10, or ×100).
+  </Card>
+  <Card title="Price Until Next Achievement" icon="trophy">
+    Buildings that are within 100 units of their next purchase-count achievement are sorted to the top by the cumulative cost of reaching that milestone. Buildings more than 100 away appear below in default order.
+  </Card>
+</CardGroup>
+
+## Sorting Upgrades
+
+**SortUpgrades** controls the display order of available upgrades:
+
+- **Default** — upgrades are ordered by base price (cheapest first), matching vanilla behavior.
+- **PP** — upgrades are sorted by payback period, best PP first, using the same color-group-then-PP ordering as the building sort.
+
+## The Bottom Bar
+
+The **BotBar** setting (default: ON) adds a horizontal table below the cookie area that shows one column per building type. Each column displays:
+
+1. **Building count** — how many of that building you currently own.
+2. **Bonus Income** — the additional CPS you would gain by purchasing the current bulk quantity.
+3. **Payback Period** — the PP value for the current bulk quantity, colored to match the building color.
+4. **Time Left** — how long until you have enough cookies to afford the purchase, accounting for wrinkler-held cookies if the wrinkler calculation setting is enabled.
+
+<Note>
+  The bottom bar only displays meaningful data in **buy-1 mode** (`Game.buyMode === 1`). When you switch to sell mode, the bar retains the last buy-mode values it calculated so the display doesn't go blank, but the numbers reflect the most recent buy-mode snapshot.
+</Note>
+
+For a full explanation of the PP color scale used in the bottom bar, see [Color Coding](/concepts/color-coding). For details on how the payback period number itself is derived, see [Payback Period](/concepts/payback-period).
+
+## Dragon Aura Info
+
+When **DragonAuraInfo** is ON (default: ON), Cookie Monster augments the dragon aura selection interface with two extra pieces of information for each aura slot:
+
+- The **CPS change** that equipping this aura would produce.
+- The **cost change** to buildings that would result from equipping this aura.
+
+This allows you to evaluate the actual PP impact of switching auras without having to do the math manually.
+
+## Upgrades Never Collapse
+
+By default, the upgrades section in Cookie Clicker can collapse when there are too many upgrades. Enabling **UpgradesNeverCollapse** (default: OFF) forces the upgrade sections to always expand to whatever height is needed to show all available upgrades at once, eliminating the need to scroll within the upgrade area.
+
+## Hide Sections Buttons
+
+When **HideSectionsButtons** is ON (default: OFF), two toggle buttons appear above the right column — one to hide the buildings section and one to hide the upgrades section. This is useful on narrow screens or when you want to focus on just one part of the store.
+
+## Building Lock Buttons
+
+Cookie Monster injects small lock buttons next to each building. Clicking a lock prevents Cookie Monster from counting that building toward the optimal purchase recommendation. This is useful for deliberate strategies such as saving up for a specific building while ignoring lower-priority options.
+
+## Bulk Buy Block
+
+The **BulkBuyBlock** setting (default: ON) prevents accidental partial bulk purchases. With it enabled, clicking a building in ×10 or ×100 mode when you can only afford fewer than the full batch does nothing — the click is silently blocked. This prevents scenarios such as accidentally buying 7 buildings when you intended to buy a full 10.
+
+```
+Example: Bank = 950 cookies, building costs 100 each
+Bulk ×10 total = 1000 cookies required
+→ BulkBuyBlock ON:  click is blocked, 0 buildings purchased
+→ BulkBuyBlock OFF: click succeeds, 9 buildings purchased
+```
+
+## Settings Reference
+
+<AccordionGroup>
+  <Accordion title="BuildColour — Building colour coding">
+    **Group:** Colours | **Default:** ON
+
+    Color-codes each building's price label in the store according to its PP rank. Turning this OFF removes all color coding from building labels.
+  </Accordion>
+  <Accordion title="UpBarColour — Upgrade colours and bar">
+    **Group:** BarsDisplay | **Default:** Colours with bar ON
+
+    Controls whether upgrade icons receive a color dot and whether the upgrade counter bar is displayed. Options: OFF / colours+bar / colours only.
+  </Accordion>
+  <Accordion title="UpgradeBarFixedPos — Upgrade bar fixed position">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Pins the upgrade bar to the top of the screen so it does not scroll off when the building list is long.
+  </Accordion>
+  <Accordion title="SortBuildings — Building sort order">
+    **Group:** BarsDisplay | **Default:** Default
+
+    Sorts the building list by default order, PP of ×1 purchase, PP of selected bulk mode, or price until next achievement.
+  </Accordion>
+  <Accordion title="SortUpgrades — Upgrade sort order">
+    **Group:** BarsDisplay | **Default:** Default
+
+    Sorts the upgrade list by default price order or by payback period.
+  </Accordion>
+  <Accordion title="BotBar — Bottom bar">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Shows a persistent bar below the cookie with per-building columns showing count, bonus income, PP, and time to afford.
+  </Accordion>
+  <Accordion title="DragonAuraInfo — Dragon aura extra info">
+    **Group:** BarsDisplay | **Default:** ON
+
+    Shows CPS and cost impact information in the dragon aura selection interface.
+  </Accordion>
+  <Accordion title="UpgradesNeverCollapse — Always expanded upgrades">
+    **Group:** BarsDisplay | **Default:** OFF
+
+    Forces upgrade sections to always display all upgrades without collapsing.
+  </Accordion>
+  <Accordion title="HideSectionsButtons — Section hide buttons">
+    **Group:** BarsDisplay | **Default:** OFF
+
+    Adds buttons to show/hide the buildings and upgrades sections of the right column.
+  </Accordion>
+  <Accordion title="BulkBuyBlock — Block partial bulk purchases">
+    **Group:** Miscellaneous | **Default:** ON
+
+    Prevents clicking a building in bulk mode when you cannot afford the full batch.
+  </Accordion>
+</AccordionGroup>

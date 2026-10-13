@@ -1,20 +1,71 @@
 ---
-title: "Introduction"
-description: "Welcome to your project"
+title: "Cookie Monster: Cookie Clicker Optimizer Addon"
+sidebarTitle: "Home"
+description: "Cookie Monster is a Cookie Clicker addon that calculates Payback Periods, color-codes buildings and upgrades, and surfaces timers, tooltips, and statistics to help you play smarter."
 ---
 
-Write a short description of your product here. What it does, who it's for, and what they can accomplish with it.
+Cookie Monster is a feature-rich addon for Cookie Clicker that gives you the data you need to make better decisions — without turning the game into a spreadsheet you didn't ask for. Every feature can be toggled individually, so you choose exactly how much help you want.
 
-<Tip>
-  Ready to make this your own? Start by editing this page. Update your `docs.json` file to customize your site. Then fill out the [Quickstart](/quickstart) page.
-</Tip>
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Load Cookie Monster via bookmarklet, browser console, or userscript in under a minute.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get oriented fast: what Cookie Monster shows, where to find it, and how to configure it.
+  </Card>
+  <Card title="Payback Period" icon="clock" href="/concepts/payback-period">
+    Understand the core PP formula that drives building and upgrade color-coding.
+  </Card>
+  <Card title="Configuration" icon="sliders" href="/configuration/settings-overview">
+    Explore every setting category and customize Cookie Monster to your play style.
+  </Card>
+</CardGroup>
 
-<Card title="Quickstart" icon="rocket" href="/quickstart">
-  This card links to the quickstart page in your project.
-</Card>
-<Card title="Components" icon="puzzle-piece" href="https://mintlify.com/docs/components">
-  Add cards, callouts, steps, tabs, and more to design and structure your pages.
-</Card>
-<Card title="Settings" icon="gear" href="https://mintlify.com/docs/organize/settings">
-  Set your site name, branding, and navigation in the `docs.json` file.
-</Card>
+## What Cookie Monster does
+
+Cookie Monster adds a layer of calculated insight on top of the standard Cookie Clicker UI. At the heart of it is the **Payback Period (PP)** — a single number that tells you how long it will take to recoup the cost of any building or upgrade. Lower is better.
+
+<CardGroup cols={3}>
+  <Card title="Buildings & Upgrades" icon="store" href="/features/buildings-upgrades">
+    Color-coded rankings for every item in the shop, updated in real time.
+  </Card>
+  <Card title="Timers & Bars" icon="timer" href="/features/timers-bars">
+    Timer bar, bottom bar, and golden cookie countdown overlays.
+  </Card>
+  <Card title="Tooltips" icon="circle-info" href="/features/tooltips">
+    Enhanced tooltips for buildings, grimoire, pantheon, garden, stocks, and more.
+  </Card>
+  <Card title="Statistics" icon="chart-bar" href="/features/statistics">
+    Extended stats page covering Lucky cookies, prestige, wrinklers, and achievements.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/features/notifications">
+    Browser notifications and sound alerts for golden cookies, wrinklers, and more.
+  </Card>
+  <Card title="Developer API" icon="code" href="/developer/cookiemonsterdata">
+    Access PP and colour data from other mods via the CookieMonsterData global.
+  </Card>
+</CardGroup>
+
+## Get up and running
+
+<Steps>
+  <Step title="Open Cookie Clicker">
+    Navigate to [orteil.dashnet.org/cookieclicker](https://orteil.dashnet.org/cookieclicker/) and let the game fully load.
+  </Step>
+  <Step title="Load Cookie Monster">
+    Paste the bookmarklet into your browser's address bar, or run the one-liner in the browser console:
+    ```javascript
+    Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js');
+    ```
+  </Step>
+  <Step title="Check the notification">
+    Cookie Monster shows a popup confirming the version that loaded. The shop immediately gains color-coded borders.
+  </Step>
+  <Step title="Explore the settings">
+    Open the Cookie Clicker **Options** menu. Scroll down to find the **Cookie Monster** section where every feature can be toggled on or off.
+  </Step>
+</Steps>
+
+<Note>
+Cookie Monster is not a cheat tool. It surfaces information and calculations derived from the game's own data. Every helper feature — from golden cookie alerts to PP color-coding — can be turned off individually.
+</Note>

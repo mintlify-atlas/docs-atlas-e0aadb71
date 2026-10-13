@@ -1,0 +1,212 @@
+---
+title: "How to Contribute to Cookie Monster Development"
+sidebarTitle: "Contributing"
+description: "Complete guide to forking, setting up local authentication, building, testing, submitting pull requests, and reporting bugs for Cookie Monster."
+---
+
+Cookie Monster is an open-source project and welcomes contributions of all sizes — from fixing a single typo to implementing support for a new Cookie Clicker feature. This page covers the full workflow: setting up your development environment, making and testing changes, opening a pull request, and reporting bugs or suggestions through the issue tracker.
+
+---
+
+## Branch Structure
+
+<Note>
+  Cookie Monster maintains three long-lived branches with distinct purposes:
+  - **`master`** — production branch, always reflects the latest stable release served to users.
+  - **`dev`** — development branch, the target for all pull requests and active work.
+  - **`gh-pages`** — GitHub Pages deployment branch, hosts the distributable `.js` files at `https://cookiemonsterteam.github.io/CookieMonster/dist/`.
+
+  Never open a pull request targeting `master` directly. All contributions must target `dev`.
+</Note>
+
+---
+
+## Contribution Workflow
+
+<Steps>
+  <Step title="Fork the repository">
+    Go to [github.com/CookieMonsterTeam/CookieMonster](https://github.com/CookieMonsterTeam/CookieMonster) and click **Fork**. This creates a personal copy of the repository under your GitHub account. Clone your fork locally:
+
+    ```bash
+    git clone https://github.com/YOUR_USERNAME/CookieMonster.git
+    cd CookieMonster
+    ```
+
+    If you plan to keep your fork up to date with upstream, add the upstream remote:
+
+    ```bash
+    git remote add upstream https://github.com/CookieMonsterTeam/CookieMonster.git
+    ```
+  </Step>
+
+  <Step title="Authenticate to the GitHub Package Registry and install dependencies">
+    Cookie Monster depends on `@cookiemonsterteam/cookiemonsterframework`, which is published to the **GitHub Package Registry** rather than the public npm registry. Installing it requires a GitHub Personal Access Token (PAT) with the `read:packages` scope.
+
+    The `.npmrc` file at the root of the repository already configures the correct registry endpoint:
+
+    ```ini
+    @cookiemonsterteam:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=${GITHUB_REGISTRY_PAT}
+    ```
+
+    Export your PAT as the `GITHUB_REGISTRY_PAT` environment variable before running `npm install`:
+
+    ```bash
+    export GITHUB_REGISTRY_PAT=your_personal_access_token
+    npm install
+    ```
+
+    You can generate a PAT in your GitHub account under **Settings → Developer settings → Personal access tokens**. Enable at least the `read:packages` scope. See [GitHub's documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages) for full instructions.
+
+    <Warning>
+      Do not commit your PAT to the repository. The `.npmrc` references the environment variable `${GITHUB_REGISTRY_PAT}` so the token is never stored on disk in plain text.
+    </Warning>
+  </Step>
+
+  <Step title="Create a branch and make your changes">
+    Branch off `dev` to keep your changes isolated:
+
+    ```bash
+    git checkout dev
+    git pull upstream dev
+    git checkout -b my-feature-or-fix
+    ```
+
+    Make your changes in `src/`. Refer to the [Architecture guide](/developer/architecture) for an overview of which directory owns which responsibility. A few key guidelines from `CONTRIBUTING.md`:
+
+    - **Prefer DOM manipulation** over string concatenation or `innerHTML` assignment when modifying the UI.
+    - **Write descriptive commit messages.** If your change addresses a GitHub issue or pull request, include the issue or PR number in the message (e.g. `Fix PP calculation for unshackled upgrades (#42)`).
+    - Keep changes focused — one logical change per pull request makes review faster.
+  </Step>
+
+  <Step title="Build CookieMonsterDev.js">
+    Before testing your changes in the browser, you must build the distributable file. The `build-dev` script runs ESLint, then the Mocha test suite, then Webpack:
+
+    ```bash
+    npm run build-dev
+    ```
+
+    A successful run produces `dist/CookieMonsterDev.js`. If ESLint or any test fails, the build aborts and the output file is not updated.
+
+    <Tip>
+      You can run linting and tests independently to iterate faster during development:
+
+      ```bash
+      npm run eslint   # lint only
+      npm test         # run Mocha unit tests only
+      ```
+    </Tip>
+  </Step>
+
+  <Step title="Load CookieMonsterDev.js into Cookie Clicker and test">
+    Open Cookie Clicker in your browser, open the developer console, and load your local build by pasting the contents of `dist/CookieMonsterDev.js` directly, or host the file locally and use `Game.LoadMod`. You can also point the bookmarklet at the live dev build to compare behaviour:
+
+    ```javascript
+    Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonsterDev.js');
+    ```
+
+    Verify your changes work as expected. Cookie Monster displays a game notification when it loads successfully, showing the version number.
+  </Step>
+
+  <Step title="Open a pull request targeting the dev branch">
+    Push your branch to your fork and open a pull request on GitHub:
+
+    ```bash
+    git push origin my-feature-or-fix
+    ```
+
+    In the pull request:
+    - Set the **base branch** to `dev` (not `master`).
+    - Describe what the change does and why.
+    - Reference any related issues with `Fixes #NUMBER` or `Closes #NUMBER` so they close automatically on merge.
+
+    The CI pipeline will run automatically on your pull request, checking ESLint, Mocha tests, and the webpack build. Your PR must pass all checks before it can be merged.
+  </Step>
+</Steps>
+
+---
+
+## Reporting Bugs
+
+If you encounter a bug, open an issue in the GitHub issue tracker at [github.com/CookieMonsterTeam/CookieMonster/issues](https://github.com/CookieMonsterTeam/CookieMonster/issues). Issues are the preferred channel over direct messages because they allow the community to track and contribute to fixes.
+
+Before filing a new bug report:
+
+<Steps>
+  <Step title="Test against the dev build">
+    Load the latest development version to check whether the bug has already been fixed in an unreleased update:
+
+    ```javascript
+    javascript: (function () {
+      Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonsterDev.js');
+    })();
+    ```
+
+    If the bug does not reproduce on the dev build, it is likely already resolved and awaiting the next production release.
+  </Step>
+  <Step title="Use the bug-report template">
+    When creating the issue on GitHub, select the **Bug Report** template. Fill in all fields — reproduction steps, expected behaviour, actual behaviour, and the Cookie Clicker and Cookie Monster version numbers. A complete report helps maintainers reproduce and fix the issue faster.
+  </Step>
+</Steps>
+
+---
+
+## Suggesting Features
+
+All suggestions are welcome, no matter how small. Open an issue on the GitHub tracker and describe the feature or improvement. There is no formal template required for suggestions — a clear explanation of the use case is enough. If you are willing to implement the feature yourself, mentioning that in the issue speeds up triage.
+
+---
+
+## Coding Guidelines
+
+These guidelines are taken directly from `CONTRIBUTING.md`:
+
+<Accordion title="DOM over innerHTML">
+  Prefer direct DOM manipulation (`createElement`, `appendChild`, `setAttribute`, etc.) over building HTML strings and assigning them to `innerHTML` or `outerHTML`. DOM manipulation is less error-prone, easier to debug, and sidesteps potential XSS vectors.
+</Accordion>
+
+<Accordion title="Descriptive commit messages">
+  Commit messages should clearly describe *what* changed and *why*. If the commit addresses an open issue or is part of a larger PR, include the issue or PR number. Examples:
+
+  - `Add support for Dragon Aura Supreme Intellect in pantheon PP (#118)`
+  - `Fix negative PP for unshackled upgrades`
+  - `Refactor CacheUpgradePP to use helper from Sim layer`
+</Accordion>
+
+<Accordion title="PRs must target dev">
+  All pull requests must set their base branch to `dev`. Pull requests targeting `master` will not be accepted. The `master` branch is updated from `dev` by maintainers when cutting a release.
+</Accordion>
+
+---
+
+## Build Reference
+
+```bash
+npm install          # install all dependencies (requires GITHUB_REGISTRY_PAT)
+npm run build-dev    # eslint + mocha + webpack → dist/CookieMonsterDev.js
+npm run build-final  # eslint + mocha + webpack → dist/CookieMonster.js (production)
+npm test             # run Mocha unit tests only
+npm run eslint       # run ESLint only
+```
+
+`build-dev` produces a minimized bundle with an external source map, suitable for local testing. `build-final` is used by maintainers to cut production releases; it outputs the file served to all users via the bookmarklet and userscript.
+
+---
+
+## Current Maintainers
+
+Cookie Monster is currently maintained by:
+
+<CardGroup cols={3}>
+  <Card title="Aktanusa" icon="github" href="https://github.com/Aktanusa">
+    Current maintainer. Listed as package author in `package.json`.
+  </Card>
+  <Card title="DanielNoord" icon="github" href="https://github.com/DanielNoord">
+    Current maintainer. Listed as contributor in `package.json`.
+  </Card>
+  <Card title="bitsandbytes1708" icon="github" href="https://github.com/bitsandbytes1708">
+    Current maintainer. Listed in the README contributors section.
+  </Card>
+</CardGroup>
+
+The project also acknowledges earlier contributors including Raving\_Kumquat (original author), Maxime Fabre (previous maintainer), BlackenedGem (golden/wrath cookie favicons), and Sandworm (modified PP calculation).

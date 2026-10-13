@@ -1,0 +1,178 @@
+---
+title: "Enhanced Tooltips Added by Cookie Monster"
+sidebarTitle: "Tooltips"
+description: "Cookie Monster adds live payback periods, bank warnings, spell times, wrinkler yields, garden outcomes, and stock data to Cookie Clicker tooltips."
+---
+
+Cookie Monster injects additional information into nearly every tooltip in Cookie Clicker. Instead of reading only the game's built-in description, you see live payback periods, time-to-afford values, bank warnings, spell probabilities, and more — all updated in real time as your cookie count changes. Each enhancement is individually toggleable so you can enable only the information you care about.
+
+<Note>
+  All bank-threshold warnings respect the **ToolWarnBon** setting. When that setting is ON (default), the warning calculation includes the bonus CPS you would gain from making the purchase, which slightly relaxes the threshold. Turn it OFF to calculate purely against your current CPS without factoring in post-purchase income.
+</Note>
+
+## Tooltip Types
+
+<AccordionGroup>
+
+  <Accordion title="Buildings & Upgrades — TooltipBuildUpgrade">
+    **Default:** ON
+
+    When you hover a building or upgrade in the store, Cookie Monster appends a calculation section to the tooltip showing:
+
+    - **Bonus Income** — the additional CPS you would gain from the purchase, plus its percentage of your current income.
+    - **Payback Period (PP)** — how many cookies (or seconds of CPS if PPDisplayTime is ON) it takes to recoup the purchase price via the gained income. The PP value is color-coded to match the building/upgrade's rank.
+    - **Time to Buy** — a colored countdown showing how long until you can afford the item. If wrinklers are holding enough cookies to cover the gap, the label shows `Done! (with Wrink)`.
+
+    For **upgrade tooltips**, if the upgrade grants only mouse click power (and no passive CPS), the Payback Period is replaced with a click-based period expressed as `N Clicks`. If the upgrade grants both, both are shown.
+
+    A special case: the **Chocolate Egg** upgrade tooltip receives an extra line showing the cookies you would gain right now versus the theoretical maximum (`Cookies × 5%` vs. the cached maximum Chocolate Egg value).
+  </Accordion>
+
+  <Accordion title="Amortization Info — TooltipAmor">
+    **Default:** OFF
+
+    When enabled, building tooltips include an amortization section that factors in the cost of buying multiple buildings to reach the next upgrade unlock threshold, spreading the upgrade's value across all the buildings needed. This gives a more accurate picture of the true effective payback period when an upgrade is gated behind a building count.
+  </Accordion>
+
+  <Accordion title="Lucky Warning — ToolWarnLucky">
+    **Default:** ON
+
+    Displays a warning box when the purchase would drop your cookie bank below the amount required to receive the maximum **Lucky!** reward from a golden cookie. The warning shows:
+
+    - How many cookies you would be short.
+    - How long it would take to earn back that shortfall at current (or post-purchase) CPS.
+
+    The Lucky threshold is `CPS × 60 × 15 / 0.15` cookies (15 minutes of CPS divided by the 15% coefficient).
+  </Accordion>
+
+  <Accordion title="Lucky (Frenzy) Warning — ToolWarnLuckyFrenzy">
+    **Default:** ON
+
+    Same as the Lucky warning but for the scenario where a **Frenzy** is active when the golden cookie is clicked. The frenzy threshold is 7× the base Lucky threshold, since Frenzy multiplies CPS by 7.
+  </Accordion>
+
+  <Accordion title="Conjure Baked Goods Warning — ToolWarnConjure">
+    **Default:** ON
+
+    Warns when the purchase would drop your bank below the amount required to maximize the **Conjure Baked Goods** spell reward. The Conjure threshold is 2× the Lucky threshold (the spell awards `min(cookies × 15%, CPS × 60 × 30)`).
+  </Accordion>
+
+  <Accordion title="Conjure Baked Goods (Frenzy) Warning — ToolWarnConjureFrenzy">
+    **Default:** ON
+
+    Same as the Conjure warning but for the Frenzy scenario, using a threshold of 14× the base Lucky threshold (2× Lucky frenzy).
+  </Accordion>
+
+  <Accordion title="Spontaneous Edifice Warning — ToolWarnEdifice">
+    **Default:** ON
+
+    Warns when the purchase would drop your bank below the amount needed for **Spontaneous Edifice** to potentially grant your most expensive building for free. This warning is only shown when the Wizard Tower minigame is loaded. The threshold is the cached price of the most expensive building you do not yet own.
+  </Accordion>
+
+  <Accordion title="Custom CPS Warning — ToolWarnUser">
+    **Default:** 0 (disabled)
+
+    A numeric input (set in the Cookie Monster settings) that triggers a warning when the purchase would put your bank below `N × current CPS`. Setting this to `0` disables the warning entirely. Useful for maintaining a rolling reserve — for example, setting it to `3600` warns you any time a purchase would leave you with less than one hour of CPS.
+  </Accordion>
+
+  <Accordion title="Warning Position — ToolWarnPos">
+    **Default:** Bottom
+
+    Controls where the warning boxes are anchored relative to the tooltip:
+
+    - **Left** (value `0`) — warnings appear to the left of the tooltip, aligned to its right edge.
+    - **Bottom** (value `1`) — warnings stack below the tooltip.
+  </Accordion>
+
+  <Accordion title="Grimoire Tooltips — TooltipGrim">
+    **Default:** ON
+
+    When you hover a spell in the Wizard Tower minigame, Cookie Monster adds:
+
+    - **Time Left** — a color-coded countdown showing how long until you have enough magic to cast the spell (or `Done!` if you can cast it now).
+    - **Recover Time** — how long it will take for your magic to refill back to its current level after casting (only shown when you currently have enough magic to cast).
+    - **Cookies to be Gained/Lost** (Conjure Baked Goods only) — the cookies you would receive (green) versus the cookies deducted from your bank (red) if you cast Conjure right now.
+  </Accordion>
+
+  <Accordion title="Wrinkler Tooltip — TooltipWrink">
+    **Default:** ON
+
+    When you hover an individual wrinkler, the tooltip shows the exact number of cookies that wrinkler will yield when you pop it, based on the cookies it has siphoned and the wrinkler multiplier.
+  </Accordion>
+
+  <Accordion title="Sugar Lump Tooltip — TooltipLump">
+    **Default:** ON
+
+    Adds the current sugar lump type (Normal, Bifurcated, Golden, Meaty, Caramelized) to the sugar lump tooltip, color-coded according to rarity. This saves you from having to check the lump type separately before deciding whether to wait for a better lump.
+  </Accordion>
+
+  <Accordion title="Garden Plot Tooltips — TooltipPlots">
+    **Default:** ON
+
+    When hovering a garden plot in the Farm minigame, Cookie Monster adds two sections to the tooltip:
+
+    - **Reward (Current / Maximum)** — for plants that yield cookies when harvested (Chocoroot, White Chocoroot, Bakeberry, Queenbeet, Duketater), shows what you would gain by harvesting right now versus the theoretical maximum reward for a mature plant.
+    - **After Next Tick** — shows the probability of each possible outcome (growth, death, spreading, remaining the same) for the plant on this tile at the next garden tick. Outcomes are displayed with their plant icons; undiscovered plant types appear as a question mark.
+  </Accordion>
+
+  <Accordion title="Stock Market Tooltips — TooltipStocks">
+    **Default:** ON
+
+    Augments the Bank minigame stock tooltip with four extra fields:
+
+    - **Current Mode** — the stock's current price trend (Stable, Slow Rise, Slow Fall, Fast Rise, Fast Fall, Chaotic), color-coded.
+    - **Delta** — the current price change per tick, colored green (rising) or red (falling).
+    - **Resting Value** — the long-term equilibrium price this stock gravitates toward.
+    - **Expected Next Value** — the model's predicted price on the next tick, with an up or down arrow indicator.
+  </Accordion>
+
+  <Accordion title="Pantheon God Tooltips — TooltipPantheon">
+    **Default:** ON
+
+    When hovering a god in the Pantheon minigame, Cookie Monster adds the calculated CPS effect that god would provide in each of the three slot positions (diamond, ruby, jade). Values are shown as absolute CPS plus a percentage of current income, or "No effect to CPS" if the god provides no passive income multiplier.
+  </Accordion>
+
+  <Accordion title="Ascend Button Tooltip — TooltipAscendButton">
+    **Default:** ON
+
+    Adds extra prestige-related information to the ascend button tooltip, helping you evaluate the value of ascending at your current cookie count without opening the full statistics panel.
+  </Accordion>
+
+</AccordionGroup>
+
+## Warning Box Position Diagram
+
+The warning boxes that appear for Lucky, Conjure, Edifice, and custom CPS thresholds are rendered as a separate floating panel, not inside the tooltip itself. With **ToolWarnPos** set to Bottom they stack directly below the tooltip; with Left they are anchored to the right side of the screen, aligned flush with the right edge of the tooltip.
+
+```
+ToolWarnPos = 1 (Bottom)          ToolWarnPos = 0 (Left)
+
+┌───────────────────┐              ┌────────────┐┌──────────────────────┐
+│  Tooltip content  │              │  Warnings  ││  Tooltip content     │
+├───────────────────┤              └────────────┘└──────────────────────┘
+│  ⚠ Lucky warning  │
+│  ⚠ Frenzy warning │
+└───────────────────┘
+```
+
+## Settings Reference
+
+| Setting | Group | Default | Description |
+|---------|-------|---------|-------------|
+| `TooltipBuildUpgrade` | Tooltip | ON | PP, bonus income, and time-to-buy in building/upgrade tooltips |
+| `TooltipAmor` | Tooltip | OFF | Amortization info in building tooltips |
+| `ToolWarnLucky` | Tooltip | ON | Warning when purchase drops below Lucky threshold |
+| `ToolWarnLuckyFrenzy` | Tooltip | ON | Warning when purchase drops below Lucky×Frenzy threshold |
+| `ToolWarnConjure` | Tooltip | ON | Warning when purchase drops below Conjure threshold |
+| `ToolWarnConjureFrenzy` | Tooltip | ON | Warning when purchase drops below Conjure×Frenzy threshold |
+| `ToolWarnEdifice` | Tooltip | ON | Warning when purchase drops below Spontaneous Edifice threshold |
+| `ToolWarnUser` | Tooltip | 0 | Custom CPS multiple warning threshold (0 = disabled) |
+| `ToolWarnBon` | Tooltip | ON | Include post-purchase bonus CPS in warning threshold calculations |
+| `ToolWarnPos` | Tooltip | Bottom | Warning box position relative to tooltip |
+| `TooltipGrim` | Tooltip | ON | Spell cast time and recover time in Grimoire tooltips |
+| `TooltipWrink` | Tooltip | ON | Cookie yield preview in wrinkler tooltips |
+| `TooltipLump` | Tooltip | ON | Sugar lump type in sugar lump tooltip |
+| `TooltipPlots` | Tooltip | ON | Harvest rewards and next-tick probabilities in garden plot tooltips |
+| `TooltipStocks` | Tooltip | ON | Mode, delta, resting value, and expected value in stock tooltips |
+| `TooltipPantheon` | Tooltip | ON | Per-slot CPS effect in pantheon god tooltips |
+| `TooltipAscendButton` | Tooltip | ON | Extra prestige info in the ascend button tooltip |

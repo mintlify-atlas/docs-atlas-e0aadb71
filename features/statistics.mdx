@@ -1,0 +1,132 @@
+---
+title: "Cookie Monster Statistics Page Extension"
+sidebarTitle: "Statistics"
+description: "Cookie Monster adds stats sections for lucky cookies, cookie chains, spells, garden plants, prestige progress, wrinklers, achievements, and more."
+---
+
+Cookie Monster extends the vanilla Cookie Clicker statistics screen with its own subsection that appears at the top of the menu. Each sub-section within CM's stats block is independently collapsible using a header toggle, so you can keep only the information you care about expanded. The entire stats extension is controlled by the **Stats** master toggle (default: ON), and individual sections such as missing upgrades and missing achievements have their own settings.
+
+## Update Rate
+
+By default, Cookie Monster's statistics sections refresh every **5 seconds** to avoid performance impact during active play. Switch **UpStats** to the 1-second rate if you want near-real-time updates — useful when actively managing wrinklers or watching chain cookie thresholds approach.
+
+<Tip>
+  The 1-second update rate is noticeably more responsive when you are close to a Lucky or Chain threshold and watching the colored requirement values tick toward green. For casual sessions, the default 5-second rate is fine.
+</Tip>
+
+## Lucky Cookies Section
+
+The **Lucky Cookies** section shows the bank requirements and maximum rewards for the **Lucky!** golden cookie effect:
+
+- **"Lucky!" cookies required** — the minimum bank needed to receive the full Lucky reward. Displayed in red if your current bank (including wrinkler-held cookies per your CalcWrink setting) falls short, green if you are covered. A time estimate to reach the threshold is appended in parentheses when you are short.
+- **"Lucky!" cookies required (frenzy)** — the same threshold multiplied by 7 for a Frenzy-active scenario.
+- **"Lucky!" reward (max)** — the maximum cookies you can receive from a Lucky click given an ideal bank. Shown separately for golden and wrath cookies when the two differ (e.g. due to Dragon's Fortune).
+- **"Lucky!" reward (max) (frenzy)** — the frenzy-boosted maximum reward.
+- **"Lucky!" reward (cur)** — what you would actually receive from a Lucky click right now, based on your current bank.
+
+## Chain Cookies Section
+
+The **Chain Cookies** section covers the bank and CPS requirements for triggering a full cookie chain:
+
+- Required bank for a golden-cookie chain and a wrath-cookie chain, each with a time-to-threshold indicator.
+- Required bank for the frenzy versions of both.
+- Maximum chain reward (current bank) and maximum chain reward (frenzy), shown for both golden and wrath cookies.
+- **CPS needed for next chain level** — how much CPS increase is needed before the next cookie in a chain would be worth one more digit, for golden and wrath.
+- The same CPS targets for the frenzy scenario.
+
+## Spells Section (Wizard Tower Only)
+
+The **Spells** section appears only when the Wizard Tower minigame is loaded:
+
+- **"Conjure Baked Goods" cookies required** — the bank needed to maximize the Conjure reward, with time-to-threshold.
+- **"Conjure Baked Goods" reward (max)** — the theoretical maximum Conjure reward.
+- **"Conjure Baked Goods" cookies required (frenzy)** — the frenzy-multiplied threshold (7× base).
+- **"Conjure Baked Goods" reward (max) (frenzy)**.
+- **"Conjure Baked Goods" reward (cur)** — what Conjure would yield right now.
+- **"Spontaneous Edifice" cookies required** — displayed only when Edifice could grant a building; shows the required bank and the building name that would be granted.
+- **Spells cast** — your total spells cast with a progress note toward the next spell-count achievement (at 9, 99, and 999 total spells).
+
+## Garden Section (Farm Only)
+
+The **Garden** section appears only when the Farm minigame is loaded. It shows the bank required to receive the maximum harvest reward from each reward-bearing plant:
+
+| Plant | Bank Required for Max Reward |
+|-------|------------------------------|
+| Bakeberry | 1,000 minutes of CPS (`CPS × 60 × 10 × 100`) |
+| Chocoroot / White Chocoroot | 100 minutes of CPS (`CPS × 60 × 100`) |
+| Queenbeet | 1,500 minutes of CPS (`CPS × 60 × 60 × 25`) |
+| Duketater | 1,500 minutes of CPS (`CPS × 60 × 15 × 100`) |
+
+Values turn red when you are below the threshold and green when you are above. The section also lists any rare plant drops you have not yet unlocked.
+
+## Prestige Section
+
+The **Prestige** section helps you plan ascensions:
+
+- **Prestige level (cur / max)** — your current prestige versus the maximum you could achieve if you ascended right now (counting wrinkler-held cookies and available Chocolate Egg if applicable).
+- **Cookies to next level** — how many more cookies you need to bake to gain one more prestige level, with an estimated time based on average CPS.
+- **Heavenly chips (cur / max)** — current chips versus the chips you would have if you ascended now.
+- **Heavenly chips per second** — your HC/s over the last 5 seconds.
+- **Heavenly chips to target** — if you have set **HeavenlyChipsTarget** in settings, this row shows how many HC remain before you reach that target, plus an estimated time using the current 5-second average.
+- **Reset bonus income** — the CPS increase you would gain from the prestige multiplier unlocked by ascending now.
+- **Lucky Digit / Lucky Number / Lucky Payout** — for each of these special prestige upgrades not yet owned, shows the prestige level needed to unlock it, the cumulative prestige needed if you reset now, and the delta.
+
+<Tip>
+  Set **HeavenlyChipsTarget** to the prestige level at which you plan to unlock a specific heavenly upgrade, then use the stats page to see exactly how far you are and when you will arrive. This makes ascension planning concrete rather than approximate.
+</Tip>
+
+## Wrinklers Section
+
+The **Wrinklers** section appears only when wrinklers are present (i.e., `Game.cpsSucked > 0`):
+
+- **Rewards of Popping (All / Normal)** — the total cookies you would receive from popping all wrinklers (all types) versus popping only normal (non-shiny) wrinklers. A **Pop All Normal** inline button lets you pop all non-shiny wrinklers directly from the stats page without closing the menu.
+- **Rewards of Popping Single Fattest Non-Shiny Wrinkler** — the cookie yield from popping just your fattest normal wrinkler (the one holding the most cookies), along with its internal ID. A **Pop Single Fattest** button triggers this immediately.
+
+## Season Section
+
+The **Season Specials** section is shown when there are seasonal cookies or eggs still to collect, or when the Christmas season is active. It lists:
+
+- Missing Halloween cookies and their per-wrinkler/shiny-wrinkler drop probability.
+- Missing Christmas cookies and their per-reindeer drop probability.
+- Missing Valentine's cookies.
+- Missing normal Easter eggs and their per-wrinkler/golden-cookie drop probability.
+- Missing rare Easter eggs and their drop probability.
+- Current reindeer reward (during Christmas season).
+- Chocolate Egg potential value (if unlocked but not yet purchased).
+- Century Egg multiplier (if owned).
+
+## Achievements Section
+
+The **Achievements** section lists, for every building type, how many more of that building you need to purchase to reach the next purchase-count achievement (if the milestone is within the next 100 buildings). The cumulative cost to reach that count is shown alongside the building count delta.
+
+If a building type has no achievement milestone within the next 100 buildings, it shows "No new achievement for next 100 buildings."
+
+## Miscellaneous Section
+
+The **Miscellaneous** section consolidates several individual statistics:
+
+- **Average cookies per second** — your rolling average CPS over the time window set in **AvgCPSHist** (10 seconds to 30 minutes), reflecting the CalcWrink wrinkler calculation mode.
+- **Average cookie clicks per second** — your average clicking rate over the window set in **AvgClicksHist**.
+- **Cookies from clicking** — total cookies produced by clicking over that same window.
+- **Fortune Upgrades Left to Buy** — a list of fortune cookie upgrades from the news ticker that you have not yet purchased (shown only when you own the Fortune Cookies upgrade).
+- **Missed golden cookies** — a running count of golden cookies you did not click, controlled by **ShowMissedGC** (default: ON).
+- **Time till autosave** — a live countdown to the next autosave (shown only when autosave is enabled).
+
+## Missing Upgrades Section
+
+When **MissingUpgrades** is ON (default: ON), Cookie Monster appends a separate section below the main CM stats block listing every upgrade that is currently available to unlock but has not been purchased. This gives you a checklist for completing your upgrade collection.
+
+## Missing Achievements Section
+
+When **MissingAchievements** is ON (default: OFF), Cookie Monster appends a section listing every normal (non-shadow) achievement you have not yet earned. Enable this for a systematic view of what achievements remain on your list.
+
+## Settings Reference
+
+| Setting | Group | Default | Description |
+|---------|-------|---------|-------------|
+| `Stats` | Statistics | ON | Master toggle for all CM statistics sections |
+| `UpStats` | Statistics | Default (5s) | Refresh rate for statistics: default every 5 seconds, or every 1 second |
+| `HeavenlyChipsTarget` | Statistics | 1 | Target prestige level used in the Prestige section countdown |
+| `ShowMissedGC` | Statistics | ON | Show missed golden cookie count in Miscellaneous section |
+| `MissingUpgrades` | Statistics | ON | Show a list of unowned available upgrades in the stats screen |
+| `MissingAchievements` | Statistics | OFF | Show a list of unearned normal achievements in the stats screen |

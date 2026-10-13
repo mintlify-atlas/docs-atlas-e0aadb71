@@ -1,0 +1,100 @@
+---
+title: "Understanding Cookie Monster's Color-Coding System"
+sidebarTitle: "Color Coding"
+description: "Cookie Monster color-codes every building and upgrade by Payback Period rank. Learn what each of the seven colors means and how to customize them."
+---
+
+Once Cookie Monster has computed a Payback Period (PP) for every building and upgrade in your shop, it applies a color to each one so you can spot the best purchases at a glance without reading numbers. Seven distinct colors cover the full range from "best available" to "not worth buying right now," and every color can be customized to any hex value you prefer.
+
+## The Seven Colors
+
+| Color | Default Hex | Meaning | Applies To |
+|---|---|---|---|
+| **Light Blue** | `#4bb8f0` | Better PP than the best-ranked building | Upgrades only |
+| **Green** | `#00ff00` | Best PP among all buildings | Buildings |
+| **Yellow** | `#ffff00` | Within the top 10 PP values | Buildings |
+| **Orange** | `#ff7f00` | Within the top 20 PP values | Buildings |
+| **Red** | `#ff0000` | Within the top 30 PP values | Buildings |
+| **Purple** | `#ff00ff` | Outside the top 30 PP values | Buildings |
+| **Gray** | `#b3b3b3` | No PP (zero or infinite) — no CPS change, or a negative/infinity result | Buildings & Upgrades |
+
+<Note>
+  The same seven colors (plus pink and brown for special buffs) are reused throughout Cookie Monster's **timer bar**. For example: Frenzy timers appear in yellow, Clot timers in red, Click Frenzy in light blue, Blood Frenzy in green, Next Reindeer in orange, Next Cookie/Reindeer in purple or gray, and Dragonflight in pink. Knowing the PP palette also means you can read the timer bar without checking the labels.
+</Note>
+
+### Light Blue — Upgrades Beating the Best Building
+
+An upgrade colored light blue has a lower PP than the single best building currently available. In other words, buying this upgrade is a more efficient use of cookies than any building purchase right now. Prioritize light blue upgrades before buying any building.
+
+### Green — Best Building
+
+Exactly one building (or bulk-buy option) carries the green color at any moment — it is the single most efficient building purchase. When a buy-10 or buy-100 option has the best PP, Cookie Monster colors that building green for the relevant bulk quantity.
+
+### Yellow, Orange, Red — Top 10 / 20 / 30
+
+These colors indicate a building is competitive but not the single best option. Yellow is close behind green (top 10), orange is still solid (top 20), and red means the building is among the bottom third of the "still-worth-considering" range (top 30).
+
+### Purple — Outside Top 30
+
+A purple building is not in the top 30 most efficient options. It is not necessarily a bad purchase — late-game saves may make it more attractive — but Cookie Monster's ranking puts it below more efficient choices.
+
+### Gray — No PP
+
+Gray means Cookie Monster could not compute a meaningful PP for the item. This typically occurs when a building or upgrade produces no change in CPS (Δcps = 0), resulting in an infinite or undefined PP. Cosmetic upgrades and certain seasonal items that don't affect CPS often appear gray.
+
+## Customizing Colors
+
+Every color in the system is individually adjustable. Open the Cookie Monster settings panel and navigate to the **Colours** group. Each color setting accepts a hex color value, so you can swap the palette to match any color scheme or accessibility need.
+
+<Accordion title="Default color settings in source">
+  From `settings.js`, these are the seven PP color settings and their defaults:
+
+  ```javascript
+  ColourBlue:   '#4bb8f0'  // upgrades better than best building
+  ColourGreen:  '#00ff00'  // best PP building
+  ColourYellow: '#ffff00'  // top 10 PP
+  ColourOrange: '#ff7f00'  // top 20 PP
+  ColourRed:    '#ff0000'  // top 30 PP
+  ColourPurple: '#ff00ff'  // outside top 30
+  ColourGray:   '#b3b3b3'  // no PP / infinity
+  ```
+
+  Additional colors for the timer bar (not directly tied to PP rank):
+
+  ```javascript
+  ColourPink:   '#ff1493'  // Dragonflight bar
+  ColourBrown:  '#8b4513'  // Dragon Harvest bar
+  ```
+</Accordion>
+
+## Modifying What Gets Colored
+
+Three settings in the **Colours** group change which items are included in the ranking before colors are assigned.
+
+### PPOnlyConsiderBuyable — Ignore Items You Can't Afford
+
+<ParamField path="PPOnlyConsiderBuyable" type="toggle" default="Don't ignore non-buyable">
+  When set to **Ignore non-buyable**, any building or upgrade whose price exceeds your current cookie bank is immediately colored **red**, regardless of its PP rank. Items you can afford are still ranked normally among themselves.
+
+  This mode is useful when you want to spend your current bank as efficiently as possible and don't want cheaper-but-unaffordable buildings diluting the color signal.
+</ParamField>
+
+### PPExcludeTop — Skip the 1st/2nd/3rd Best
+
+<ParamField path="PPExcludeTop" type="select" default="Don't ignore any">
+  Options: Don't ignore any · Ignore 1st best · Ignore 1st and 2nd best · Ignore 1st, 2nd and 3rd best
+
+  This setting removes the top 1, 2, or 3 ranked entries from the coloring comparison entirely (they receive gray). It is helpful if your very best option is something you've already decided to buy and you want the colors to tell you what's *next* in line without that item dominating the palette.
+</ParamField>
+
+### PPRigidelMode — Stay on Multiples of 10 for Rigidel
+
+<ParamField path="PPRigidelMode" type="toggle" default="Rigidel mode OFF">
+  The Pantheon god **Rigidel** grants bonuses that scale with your total building count, but only when that count ends in the digit 0 (i.e., is a multiple of 10). With Rigidel mode enabled, Cookie Monster ignores all **buy-1** options entirely when computing colors — every buy-1 building is colored gray. Only buy-10 and buy-100 options participate in the ranking.
+
+  This prevents you from accidentally buying a single building and breaking a ×10 building total that Rigidel requires.
+</ParamField>
+
+<Tip>
+  If you play with Rigidel slotted in the Pantheon, turn on **Rigidel mode** and set your bulk-buy mode in the base game to Buy 10. Cookie Monster will then only highlight efficient bulk purchases that keep your total building count on a multiple of 10.
+</Tip>
